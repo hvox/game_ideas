@@ -1,3 +1,16 @@
+# If we currently have two fighting squads of health A and B, DPS of α and β.
+# Then after some time τ we will have this situation:
+# A(τ) = ((A(0) - B(0)√(β/α)) * e^(τ*√(αβ)) + (A(0) + B(0)√(β/α)) * e^(-τ*√(αβ))) / 2
+# B(τ) = ((B(0) - A(0)√(α/β)) * e^(τ*√(αβ)) + (B(0) + A(0)√(α/β)) * e^(-τ*√(αβ))) / 2
+# Using the equations above we can find such τ = δ so that B(τ) = 0.
+# δ = ln( (A*√α + B*√β) / √(α*A(0)^2 - β*B(0)^2) ) / √(αβ)
+# And using this δ we can find A(δ) at the moment δ when B(δ) = 0.
+# A(δ) = ((A(0) - B(0)√(β/α)) * (A*√α + B*√β) / √(α*A(0)^2 - β*B(0)^2) + (A(0) + B(0)√(β/α)) / (A*√α + B*√β) / √(α*A(0)^2 - β*B(0)^2)) / 2
+#      = A(0) * √(1 - β*B(0)^2 / (α*A(0)^2))
+# Or simply:
+# A(δ) = A(0) * √(1 - φ/π), where φ = β*B(0)^2 and π = α*A(0)^2
+
+
 import dataclasses
 
 
