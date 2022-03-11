@@ -14,3 +14,14 @@ class Squad:
         th1 = max(0, th1 - units2 * dps2)
         th2 = max(0, th2 - units1 * dps1)
         return Squad(th1 / h1, h1, dps1), Squad(th2 / h2, h2, dps2)
+
+    def fight_to_death(self, other):
+        units1, h1, dps1 = dataclasses.astuple(self)
+        units2, h2, dps2 = dataclasses.astuple(other)
+        th1, th2 = h1 * units1, h2 * units2
+        force1 = dps1 * units1 * th1
+        force2 = dps2 * units2 * th2
+        if force1 < force2:
+            return tuple(reversed(other.fight(self)))
+        units1 *= (1 - force2 / force1) ** 0.5
+        return Squad(units1, h1, dps1), Squad(0, h2, dps2)
