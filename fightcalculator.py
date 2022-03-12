@@ -19,6 +19,7 @@
 # A(δ) = A * √(1 - Bβ/Aα)
 
 
+from math import cosh as ch, sinh as sh
 import dataclasses
 
 
@@ -35,6 +36,16 @@ class Squad:
         th1 = max(0, th1 - units2 * dps2)
         th2 = max(0, th2 - units1 * dps1)
         return Squad(th1 / h1, h1, dps1), Squad(th2 / h2, h2, dps2)
+
+    def fight(self, other, delta_time=1):
+        units1, h1, dps1 = dataclasses.astuple(self)
+        units2, h2, dps2 = dataclasses.astuple(other)
+        th1, td1 = units1 * h1, units1 * dps1
+        th2, td2 = units2 * h2, units2 * dps2
+        x = delta_time * ((td1 * td2) / (th1 * th2)) ** 0.5
+        new_th1 = th1 * ch(x) - th2 * (th1 * td2 / td1 / th2) * sh(x)
+        new_th2 = th2 * ch(x) - th1 * (th2 * td1 / td2 / th1) * sh(x)
+        return Squad(new_th1 / h1, h1, dps1), Squad(new_th2 / h2, h2, dps2)
 
     def fight_to_death(self, other):
         units1, h1, dps1 = dataclasses.astuple(self)
