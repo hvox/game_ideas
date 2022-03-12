@@ -7,6 +7,9 @@
 # Then after some time τ we will have this situation:
 # A(τ) = ((A - B√(Aβ/αB)) * e^(τ*√(αβ/AB)) + (A + B√(Aβ/αB)) * e^(-τ*√(αβ/AB))) / 2
 # B(τ) = ((B - A√(Bα/βA)) * e^(τ*√(αβ/AB)) + (B + A√(Bα/βA)) * e^(-τ*√(αβ/AB))) / 2
+# Or in terms of hyperbolic functions:
+# A(τ) = A * ch(τ * √(αβ/AB)) - B√(Aβ/αB) * sh(τ * √(αβ/AB))
+# B(τ) = B * ch(τ * √(αβ/AB)) - A√(Bα/βA) * sh(τ * √(αβ/AB))
 #
 # Assume Aα > Bβ, therefore squad #1 is going to win.
 # Using the equations above we can find such τ = δ so that B(τ) = 0.
