@@ -34,6 +34,6 @@ class Squad:
         th1, td1 = units1 * h1, units1 * dps1
         th2, td2 = units2 * h2, units2 * dps2
         if th1 * td1 < th2 * td2:
-            return tuple(reversed(other.fight(self)))
+            return tuple(reversed(other.fight_to_death(self)))
         units1 *= (1 - (th2 * td2) / (th1 * td1)) ** 0.5
         return Squad(units1, h1, dps1), Squad(0, h2, dps2)
