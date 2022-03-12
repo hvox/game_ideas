@@ -31,10 +31,9 @@ class Squad:
     def fight_to_death(self, other):
         units1, h1, dps1 = dataclasses.astuple(self)
         units2, h2, dps2 = dataclasses.astuple(other)
-        th1, th2 = h1 * units1, h2 * units2
-        force1 = dps1 * units1 * th1
-        force2 = dps2 * units2 * th2
-        if force1 < force2:
+        th1, td1 = units1 * h1, units1 * dps1
+        th2, td2 = units2 * h2, units2 * dps2
+        if th1 * td1 < th2 * td2:
             return tuple(reversed(other.fight(self)))
-        units1 *= (1 - force2 / force1) ** 0.5
+        units1 *= (1 - (th2 * td2) / (th1 * td1)) ** 0.5
         return Squad(units1, h1, dps1), Squad(0, h2, dps2)
