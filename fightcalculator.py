@@ -25,19 +25,19 @@ import dataclasses
 
 @dataclasses.dataclass
 class Squad:
-    warriors: int
-    health_per_unit: float
-    damage_per_second: float
+    units: int
+    total_health: float
+    total_damage_per_second: float
 
     def stats(self):
-        total_health = self.warriors * self.health_per_unit
-        total_dps = self.warriors * self.damage_per_second
+        total_health = self.total_health
+        total_dps = self.total_damage_per_second
         return (total_health, total_dps, total_health * total_dps)
 
     def __mul__(self, factor):
-        health = self.health_per_unit
-        dps = self.damage_per_second
-        return Squad(self.warriors * factor, health, dps)
+        health = self.total_health * factor
+        dps = self.total_damage_per_second * factor
+        return Squad(self.units * factor, health, dps)
 
     def __matmul__(self, other):
         (health1, dps1, _), (health2, dps2, _) = self.stats(), other.stats()
