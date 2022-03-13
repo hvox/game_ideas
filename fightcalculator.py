@@ -32,7 +32,7 @@ class Squad:
     def stats(self):
         total_health = self.warriors * self.health_per_unit
         total_dps = self.warriors * self.damage_per_second
-        return (total_health, total_dps)
+        return (total_health, total_dps, total_health * total_dps)
 
     def __mul__(self, factor):
         health = self.health_per_unit
@@ -40,26 +40,25 @@ class Squad:
         return Squad(self.warriors * factor, health, dps)
 
     def __matmul__(self, other):
-        (health1, dps1), (health2, dps2) = self.stats(), other.stats()
+        (health1, dps1, _), (health2, dps2, _) = self.stats(), other.stats()
         new_health1 = max(0, health1 - dps2)
         new_health2 = max(0, health2 - dps1)
         return self * (new_health1 / health1), other * (new_health2 / health2)
 
     def time_to_death(self, other):
-        (th1, td1), (th2, td2) = self.stats(), other.stats()
-        t = (th1 * th2 / td1 / td2) ** 0.5
-        f1, f2 = reversed(sorted((th1 * td1, th2 * td2)))
-        return t * log((f1**0.5 + f2**0.5) / (f1 - f2) ** 0.5)
+        (A, α, αA), (B, β, βB) = self.stats(), other.stats()
+        t = (A / α * B / β) ** 0.5
+        return t * log((αA**0.5 + βB**0.5) / abs(αA - βB) ** 0.5)
 
     def fight(self, other, delta_time=1):
-        (A, α), (B, β) = self.stats(), other.stats()
+        (A, α, αA), (B, β, βB) = self.stats(), other.stats()
         x = delta_time * (α * β / A / B) ** 0.5
         new_A = A * ch(x) - B * (A / B * β / α) ** 0.5 * sh(x)
         new_B = B * ch(x) - A * (B / A * α / β) ** 0.5 * sh(x)
         return self * (new_A / A), other * (new_B / B)
 
     def fight_to_death(self, other):
-        (th1, td1), (th2, td2) = self.stats(), other.stats()
-        if th1 * td1 < th2 * td2:
+        (A, α, αA), (B, β, βB) = self.stats(), other.stats()
+        if αA < βB:
             return tuple(reversed(other.fight_to_death(self)))
-        return self * (1 - (th2 * td2) / (th1 * td1)) ** 0.5, other * 0
+        return self * (1 - βB / αA) ** 0.5, other * 0
