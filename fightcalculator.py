@@ -4,7 +4,13 @@
 # Total health of units of squad #2: B.
 # Total damage per second of squad #2: β.
 #
-# Then after some time τ we will have this situation:
+# At every moment every squad gets damage from another one.
+# dA(τ)/dτ = -β * B(τ) / B
+# dB(τ)/dτ = -α * A(τ) / A
+#
+# Solving the system above we get dependence of squad total health on
+# the duration of the fight.
+# In other words after some time τ we will have these total healths:
 # A(τ) = ((A - B√(Aβ/αB)) * e^(τ*√(αβ/AB)) + (A + B√(Aβ/αB)) * e^(-τ*√(αβ/AB))) / 2
 # B(τ) = ((B - A√(Bα/βA)) * e^(τ*√(αβ/AB)) + (B + A√(Bα/βA)) * e^(-τ*√(αβ/AB))) / 2
 # Or in terms of hyperbolic functions:
