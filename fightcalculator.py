@@ -29,13 +29,18 @@ class Squad:
     health_per_unit: float
     damage_per_second: float
 
+    def __mul__(self, factor):
+        health = self.health_per_unit
+        dps = self.damage_per_second
+        return Squad(self.warriors * factor, health, dps)
+
     def __matmul__(self, other):
         units1, h1, dps1 = dataclasses.astuple(self)
         units2, h2, dps2 = dataclasses.astuple(other)
         th1, th2 = h1 * units1, h2 * units2
-        th1 = max(0, th1 - units2 * dps2)
-        th2 = max(0, th2 - units1 * dps1)
-        return Squad(th1 / h1, h1, dps1), Squad(th2 / h2, h2, dps2)
+        new_th1 = max(0, th1 - units2 * dps2)
+        new_th2 = max(0, th2 - units1 * dps1)
+        return self * (new_th1 / th1), other * (new_th2 / th2)
 
     def time_to_death(self, other):
         units1, h1, dps1 = dataclasses.astuple(self)
@@ -54,7 +59,7 @@ class Squad:
         x = delta_time * (α * β / A / B) ** 0.5
         new_A = A * ch(x) - B * (A / B * β / α) ** 0.5 * sh(x)
         new_B = B * ch(x) - A * (B / A * α / β) ** 0.5 * sh(x)
-        return Squad(new_A / h1, h1, dps1), Squad(new_B / h2, h2, dps2)
+        return self * (new_A / A), other * (new_B / B)
 
     def fight_to_death(self, other):
         units1, h1, dps1 = dataclasses.astuple(self)
@@ -63,5 +68,4 @@ class Squad:
         th2, td2 = units2 * h2, units2 * dps2
         if th1 * td1 < th2 * td2:
             return tuple(reversed(other.fight_to_death(self)))
-        units1 *= (1 - (th2 * td2) / (th1 * td1)) ** 0.5
-        return Squad(units1, h1, dps1), Squad(0, h2, dps2)
+        return self * (1 - (th2 * td2) / (th1 * td1)) ** 0.5, other * 0
