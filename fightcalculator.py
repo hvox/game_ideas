@@ -29,43 +29,37 @@ class Squad:
     health_per_unit: float
     damage_per_second: float
 
+    def stats(self):
+        total_health = self.warriors * self.health_per_unit
+        total_dps = self.warriors * self.damage_per_second
+        return (total_health, total_dps)
+
     def __mul__(self, factor):
         health = self.health_per_unit
         dps = self.damage_per_second
         return Squad(self.warriors * factor, health, dps)
 
     def __matmul__(self, other):
-        units1, h1, dps1 = dataclasses.astuple(self)
-        units2, h2, dps2 = dataclasses.astuple(other)
-        th1, th2 = h1 * units1, h2 * units2
-        new_th1 = max(0, th1 - units2 * dps2)
-        new_th2 = max(0, th2 - units1 * dps1)
-        return self * (new_th1 / th1), other * (new_th2 / th2)
+        (health1, dps1), (health2, dps2) = self.stats(), other.stats()
+        new_health1 = max(0, health1 - dps2)
+        new_health2 = max(0, health2 - dps1)
+        return self * (new_health1 / health1), other * (new_health2 / health2)
 
     def time_to_death(self, other):
-        units1, h1, dps1 = dataclasses.astuple(self)
-        units2, h2, dps2 = dataclasses.astuple(other)
-        th1, td1 = units1 * h1, units1 * dps1
-        th2, td2 = units2 * h2, units2 * dps2
+        (th1, td1), (th2, td2) = self.stats(), other.stats()
         t = (th1 * th2 / td1 / td2) ** 0.5
         f1, f2 = reversed(sorted((th1 * td1, th2 * td2)))
         return t * log((f1**0.5 + f2**0.5) / (f1 - f2) ** 0.5)
 
     def fight(self, other, delta_time=1):
-        units1, h1, dps1 = dataclasses.astuple(self)
-        units2, h2, dps2 = dataclasses.astuple(other)
-        A, α = units1 * h1, units1 * dps1
-        B, β = units2 * h2, units2 * dps2
+        (A, α), (B, β) = self.stats(), other.stats()
         x = delta_time * (α * β / A / B) ** 0.5
         new_A = A * ch(x) - B * (A / B * β / α) ** 0.5 * sh(x)
         new_B = B * ch(x) - A * (B / A * α / β) ** 0.5 * sh(x)
         return self * (new_A / A), other * (new_B / B)
 
     def fight_to_death(self, other):
-        units1, h1, dps1 = dataclasses.astuple(self)
-        units2, h2, dps2 = dataclasses.astuple(other)
-        th1, td1 = units1 * h1, units1 * dps1
-        th2, td2 = units2 * h2, units2 * dps2
+        (th1, td1), (th2, td2) = self.stats(), other.stats()
         if th1 * td1 < th2 * td2:
             return tuple(reversed(other.fight_to_death(self)))
         return self * (1 - (th2 * td2) / (th1 * td1)) ** 0.5, other * 0
