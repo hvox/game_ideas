@@ -46,10 +46,10 @@ class Squad:
         return Squad(self.units * factor, health, dps)
 
     def __matmul__(self, other):
-        (health1, dps1, _), (health2, dps2, _) = self.stats(), other.stats()
-        new_health1 = max(0, health1 - dps2)
-        new_health2 = max(0, health2 - dps1)
-        return self * (new_health1 / health1), other * (new_health2 / health2)
+        (A, α, _), (B, β, _) = self.stats(), other.stats()
+        new_A = max(0, A - β)
+        new_B = max(0, B - α)
+        return self * (new_A / A), other * (new_B / B)
 
     def time_to_death(self, other):
         (A, α, αA), (B, β, βB) = self.stats(), other.stats()
