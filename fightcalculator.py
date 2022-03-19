@@ -68,3 +68,10 @@ class Squad:
         if αA < βB:
             return tuple(reversed(other.fight_to_death(self)))
         return self * (1 - βB / αA) ** 0.5, other * 0
+
+    def fight3(a, b, c, delta_time=1):
+        (A, α, _), (B, β, _), (C, γ, _) = a.stats(), b.stats(), c.stats()
+        new_A = max(0, A - (β * A / (A + C) + γ * A / (A + B)) * delta_time)
+        new_B = max(0, B - (α * B / (B + C) + γ * B / (A + B)) * delta_time)
+        new_C = max(0, C - (α * C / (C + B) + β * C / (A + C)) * delta_time)
+        return a * (new_A / A), b * (new_B / B), c * (new_C / C)
