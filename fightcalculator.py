@@ -75,3 +75,10 @@ class Squad:
         new_B = max(0, B - (α * B / (B + C) + γ * B / (A + B)) * delta_time)
         new_C = max(0, C - (α * C / (C + B) + β * C / (A + C)) * delta_time)
         return a * (new_A / A), b * (new_B / B), c * (new_C / C)
+
+    def fight3_to_death(a, b, c):
+        (A, α, _), (B, β, _), (C, γ, _) = a.stats(), b.stats(), c.stats()
+        dt = min(A, B, C) / max(α, β, γ) / 10**3
+        while a.units and b.units and c.units:
+            a, b, c = Squad.fight3(a, b, c, dt)
+        return a, b, c
