@@ -82,3 +82,7 @@ class Squad:
         while a.units and b.units and c.units:
             a, b, c = Squad.fight3(a, b, c, dt)
         return a, b, c
+
+
+if __name__ == "__main__":
+    print("Nein! Sie verwenden das Kampfmodul nicht richtig.")
