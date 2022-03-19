@@ -76,9 +76,9 @@ class Squad:
         new_C = max(0, C - (α * C / (C + B) + β * C / (A + C)) * delta_time)
         return a * (new_A / A), b * (new_B / B), c * (new_C / C)
 
-    def fight3_to_death(a, b, c):
+    def fight3_to_death(a, b, c, dt=None):
         (A, α, _), (B, β, _), (C, γ, _) = a.stats(), b.stats(), c.stats()
-        dt = min(A, B, C) / max(α, β, γ) / 10**3
+        dt = min(A, B, C) / max(α, β, γ) / 10**3 if not dt else dt
         while a.units and b.units and c.units:
             a, b, c = Squad.fight3(a, b, c, dt)
         return a, b, c
