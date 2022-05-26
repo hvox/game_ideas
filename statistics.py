@@ -1,5 +1,6 @@
-from fightcalculator import Squad
 import matplotlib.pyplot as plt
+
+from fightcalculator import Squad
 
 
 def compute_result_of_a_fight1(A, α, B, β, C, γ):

@@ -25,8 +25,10 @@
 # A(δ) = A * √(1 - Bβ/Aα)
 
 
-from math import log, cosh as ch, sinh as sh
 import dataclasses
+from math import cosh as ch
+from math import log
+from math import sinh as sh
 
 
 @dataclasses.dataclass
