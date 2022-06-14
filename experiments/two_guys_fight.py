@@ -2,8 +2,8 @@
 #   attack: α
 #   health: A
 # Guy #2:
-#   attack: α
-#   health: A
+#   attack: β
+#   health: B
 #
 # dA(τ)/dτ = -β * B(τ) / B
 # dB(τ)/dτ = -α * A(τ) / A
@@ -14,7 +14,6 @@
 # If guy #1 is more powerful than the guy #2, i.e. Aα > Bβ
 # t =  √(AB/αβ) * ln((√(Aα) + √(Bβ)) / √(Aα - Bβ)) -- time of death of guy #2
 # A(t) = A * √(1 - Bβ/Aα) -- heath of guy #1 after fight
-################################################################################
 
 from math import inf, sqrt, log as ln, cosh as ch, sinh as sh
 from random import randint
