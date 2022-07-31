@@ -25,3 +25,35 @@ crafting_times = {
     "electronic circuit": 0.5,
     "splitter": 1,
 }
+
+
+def get_total_raw_materials(material, amount=1):
+    if not (recipe := recipes.get(material, None)):
+        return {material: amount}
+    raw = {}
+    for material, x in recipe.items():
+        x *= amount
+        for raw_material, y in get_total_raw_materials(material, x).items():
+            raw[raw_material] = raw.get(raw_material, 0) + y
+    return raw
+
+
+def get_total_raw_time(material):
+    return crafting_times.get(material, 0) + sum(
+        get_total_raw_time(ingr) for ingr in recipes.get(material, set())
+    )
+
+
+target = input("target material: ")
+if ":" in target:
+    target, target_amount = target.split(":")
+    target_amount = float(target_amount)
+else:
+    target_amount = 1.0
+target = target.strip().lower()
+if target not in materials:
+    print(f"ERROR: what is {target}?")
+    exit(1)
+dt = get_total_raw_time(target)
+raw = get_total_raw_materials(target, target_amount)
+print(" -", target, ":", dt, " required materials:", raw)
