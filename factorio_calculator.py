@@ -1,3 +1,6 @@
+import graphlib
+
+sort_topologically = lambda g: graphlib.TopologicalSorter(g).static_order()
 BELT_THROUGHPUT = 15
 materials = {
     "transport belt",
@@ -44,6 +47,26 @@ def get_total_raw_time(material):
     )
 
 
+def get_intermediate_materials(material, amount=1):
+    if not (recipe := recipes.get(material, None)):
+        return {}
+    materials = {}
+    for material, x in recipe.items():
+        materials[material] = materials.get(material, 0) + x * amount
+        for mat, x in get_intermediate_materials(material, x * amount).items():
+            materials[mat] = materials.get(mat, 0) + x
+    return materials
+
+
+def get_assembly_plan(target, amount=1):
+    raw_materials = get_total_raw_materials(target, amount)
+    intermediates = get_intermediate_materials(target, amount)
+    materials = raw_materials | intermediates | {target: amount}
+    G = {ingr: recipes[ingr] for ingr in intermediates if ingr in recipes}
+    assembly_order = list(sort_topologically(G)) + [target]
+    return [(mat, materials[mat]) for mat in assembly_order]
+
+
 target = input("target material: ")
 if ":" in target:
     target, target_amount = target.split(":")
@@ -57,3 +80,13 @@ if target not in materials:
 dt = get_total_raw_time(target)
 raw = get_total_raw_materials(target, target_amount)
 print(" -", target, ":", dt, " required materials:", raw)
+for material, amount in get_assembly_plan(target, target_amount):
+    if material in raw:
+        print(f"run {amount} belts of {material}")
+        continue
+    ingredients = {m: x * amount for m, x in recipes[material].items()}
+    asms = 2 * crafting_times[material] * amount * BELT_THROUGHPUT
+    print(
+        f"use {asms} assemblers to make {amount} belts of {material} "
+        + f"out of {ingredients}"
+    )
