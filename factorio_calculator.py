@@ -30,6 +30,21 @@ crafting_times = {
 }
 
 
+def vector_sum(*dicts):
+    if len(dicts) != 2:
+        if len(dicts) == 1:
+            return dicts[0]
+        return vector_sum(dicts[0], vector_sum(dicts[1], *dicts[2:]))
+    result = dict(dicts[0])
+    for key, value in dicts[1].items():
+        result[key] = result[key] + value if key in result else value
+    return result
+
+
+def vector_dot(v: dict, x):
+    return {k: v * x for k, v in v.items()}
+
+
 def get_total_raw_materials(material, amount=1):
     if not (recipe := recipes.get(material, None)):
         return {material: amount}
@@ -49,39 +64,40 @@ def get_total_raw_time(material):
 
 def get_intermediate_materials(material, amount=1):
     if not (recipe := recipes.get(material, None)):
-        return {}
-    materials = {}
+        return {material: amount}
+    materials = {material: amount}
     for material, x in recipe.items():
-        materials[material] = materials.get(material, 0) + x * amount
         for mat, x in get_intermediate_materials(material, x * amount).items():
             materials[mat] = materials.get(mat, 0) + x
     return materials
 
 
-def get_assembly_plan(target, amount=1):
-    raw_materials = get_total_raw_materials(target, amount)
-    intermediates = get_intermediate_materials(target, amount)
-    materials = raw_materials | intermediates | {target: amount}
-    G = {ingr: recipes[ingr] for ingr in intermediates if ingr in recipes}
-    assembly_order = list(sort_topologically(G)) + [target]
-    return [(mat, materials[mat]) for mat in assembly_order]
+def get_assembly_plan(target_materials):
+    materials = vector_sum(
+        *(get_intermediate_materials(m, x) for m, x in target_materials.items())
+    )
+    G = {ingr: recipes.get(ingr, set()) for ingr in materials}
+    return [(mat, materials[mat]) for mat in sort_topologically(G)]
 
 
-target = input("target material: ")
-if ":" in target:
-    target, target_amount = target.split(":")
-    target_amount = float(target_amount)
-else:
-    target_amount = 1.0
-target = target.strip().lower()
-if target not in materials:
-    print(f"ERROR: what is {target}?")
-    exit(1)
-dt = get_total_raw_time(target)
-raw = get_total_raw_materials(target, target_amount)
-print(" -", target, ":", dt, " required materials:", raw)
-for material, amount in get_assembly_plan(target, target_amount):
-    if material in raw:
+targets = []
+for target in input("targets: ").split(","):
+    if ":" in target:
+        target, target_amount = target.split(":")
+        target_amount = float(target_amount)
+    else:
+        target_amount = 1.0
+    target = target.strip().lower()
+    if target not in materials:
+        print(f"ERROR: what is {target}?")
+        continue
+    dt = get_total_raw_time(target)
+    raw = get_total_raw_materials(target, target_amount)
+    print(target, ":", dt, " required materials:", raw)
+    targets.append((target, target_amount))
+print(" ---- the plan ----")
+for material, amount in get_assembly_plan(dict(targets)):
+    if material not in recipes:
         print(f"run {amount} belts of {material}")
         continue
     ingredients = {m: x * amount for m, x in recipes[material].items()}
