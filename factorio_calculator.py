@@ -11,6 +11,11 @@ materials = {
     "iron gear wheel",
     "copper plate",
     "electronic circuit",
+    "artillery shell",
+    "radar",
+    "plastic bar",
+    "explosive cannon shell",
+    "steel plate",
 }
 recipes = {
     "iron gear wheel": {"iron plate": 2},
@@ -19,6 +24,17 @@ recipes = {
     "copper cable": {"copper plate": 0.5},
     "electronic circuit": {"copper cable": 3, "iron plate": 1},
     "splitter": {"iron plate": 5, "transport belt": 4, "electronic circuit": 5},
+    "artillery shell": {
+        "radar": 1,
+        "explosives": 8,
+        "explosive cannon shell": 4,
+    },
+    "radar": {"iron plate": 10, "iron gear wheel": 5, "electronic circuit": 5},
+    "explosive cannon shell": {
+        "steel plate": 2,
+        "plastic bar": 2,
+        "explosives": 2,
+    },
 }
 crafting_times = {
     "iron gear wheel": 0.5,
@@ -27,6 +43,9 @@ crafting_times = {
     "copper cable": 0.25,
     "electronic circuit": 0.5,
     "splitter": 1,
+    "artillery shell": 15,
+    "radar": 0.5,
+    "explosive cannon shell": 8,
 }
 
 
