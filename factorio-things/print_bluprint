@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+import clipboard
+from factorio.blueprints import decode
+
+
+encoded = clipboard.paste()
+for (x, y), (name, attrs) in decode(encoded).items():
+    print(f"{x:6} {y:6} {name:20} {attrs}")
