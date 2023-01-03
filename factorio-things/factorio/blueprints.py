@@ -1,6 +1,7 @@
 import zlib
 import base64
 import json
+import math
 
 
 DIRECTED_STRUCTURES = {"transport-belt", "splitter", "express-loader", "underground-belt"}
@@ -19,7 +20,9 @@ def decode(encoded: str) -> dict[tuple[float, float], tuple[str, dict[str, str]]
         if name in DIRECTED_STRUCTURES and "direction" not in attrs:
             attrs["direction"] = 0
         entities[x, y] = (name, attrs)
-    return entities
+    x0 = math.floor(min(x for x, _ in entities))
+    y0 = math.floor(min(y for _, y in entities))
+    return {(x - x0, y - y0): item for (x, y), item in entities.items()}
 
 
 def encode(entities: dict[tuple[float, float], tuple[str, dict[str, str]]]) -> str:
@@ -29,9 +32,11 @@ def encode(entities: dict[tuple[float, float], tuple[str, dict[str, str]]]) -> s
         entity_json["entity_number"] = i + 1
         entity_json["position"] = {"x": x, "y": -y}
         entity_json["name"] = name
+        if entity_json.get("direction") == 0:
+            del entity_json["direction"]
         entities_json.append(entity_json)
     json_obj = {"blueprint": {"entities": entities_json}}
-    compressed = zlib.compress(json.dumps(json_obj).encode(), 9)
+    compressed = zlib.compress(json.dumps(json_obj, separators=(',', ':')).encode(), 9)
     return "0" + base64.b64encode(compressed).decode()
 
 
@@ -44,7 +49,7 @@ def rotated(
         dx, dy = x - origin_x, y - origin_y
         rotated_entity = dict(entity)
         if "direction" in rotated_entity:
-            rotated_entity["direction"] = (rotated_entity["direction"] - 2) % 8 or 8
+            rotated_entity["direction"] = (rotated_entity["direction"] - 2) % 8
         rotated_entities[origin_x - dy, origin_y + dx] = (name, rotated_entity)
     return rotated_entities
 
