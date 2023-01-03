@@ -2,9 +2,70 @@ import zlib
 import base64
 import json
 import math
+from typing import Self
 
 
 DIRECTED_STRUCTURES = {"transport-belt", "splitter", "express-loader", "underground-belt"}
+
+
+class Blueprint:
+    size: tuple[int, int]
+    entities: dict[tuple[float, float], tuple[str, dict[str, str | int]]]
+
+    def __init__(self, size, entities):
+        self.size = size
+        self.entities = entities
+
+    def __str__(self):
+        width, height = self.size
+        result = [f"Blueprint {width}x{height}"]
+        for (x, y), (name, attrs) in self.entities.items():
+            info = " ".join(f"{k}:{v}" for k, v in attrs.items())
+            result.append(f"{x:6} {y:6} {name:20} {info}")
+        return "\n".join(result)
+
+    @classmethod
+    def decode(cls, base64_encoded: str) -> Self:
+        if base64_encoded[0] != "0":
+            raise ValueError("Argument is not a valid blueprint")
+        zlib_compressed = base64.b64decode(base64_encoded[1:])
+        json_string = zlib.decompress(zlib_compressed).decode()
+        json_obj = json.loads(json_string)["blueprint"]
+        size = (1, 1)
+        if json_size := json_obj.get("snap-to-grid"):
+            size = (json_size["x"], json_size["y"])
+        entities = {}
+        for attrs in json_obj["entities"]:
+            name, _ = attrs.pop("name"), attrs.pop("entity_number")
+            position = attrs.pop("position")
+            x, y = position["x"], size[1]-position["y"]
+            attrs["direction"] = attrs.get("direction", 0)
+            entities[x, y] = (name, attrs)
+        return cls(size, entities)
+
+    def encode(self) -> str:
+        (width, height), entities = self.size, []
+        for i, ((x, y), (name, attrs)) in enumerate(self.entities.items()):
+            attrs = attrs | {"name": name, "entity_number": i}
+            if attrs["direction"] == 0:
+                del attrs["direction"]
+            entities.append(attrs | {"position": {"x": x, "y": height - y}})
+        json_obj = {"entities": entities}
+        if self.size != (1, 1):
+            json_obj["snap-to-grid"] = {"x": width, "y": height}
+        json_str = json.dumps({"blueprint": json_obj}, separators=(",", ":"))
+        compressed = zlib.compress(json_str.encode(), 9)
+        return "0" + base64.b64encode(compressed).decode()
+
+    def rotated(self, quarters: int) -> Self:
+        origin_x, origin_y = (x / 2 for x in self.size)
+        entities = {}
+        for (x, y), (name, attrs) in self.entities.items():
+            dx, dy, attrs = x - origin_x, y - origin_y, dict(attrs)
+            attrs["direction"] = (attrs["direction"] - 2 * quarters) % 8
+            dx, dy = [(dx, dy), (-dy, dx), (-dx, -dy), (dy, -dx)][quarters % 4]
+            entities[origin_x + dx, origin_y + dy] = (name, attrs)
+        return Blueprint(self.size, entities)
 
 
 def decode(encoded: str) -> dict[tuple[float, float], tuple[str, dict[str, str]]]:

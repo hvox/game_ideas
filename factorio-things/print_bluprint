@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import clipboard
-from factorio.blueprints import decode, encode
+from factorio.blueprints import Blueprint
 
 
 def print_json_representation(code: str):
@@ -15,13 +15,10 @@ def print_json_representation(code: str):
 
 original_code = clipboard.paste()
 print_json_representation(original_code)
-blueprint = decode(original_code)
-for (x, y), (name, attrs) in blueprint.items():
-    print(f"{x:6} {y:6} {name:20} {attrs}")
-new_code = encode(blueprint)
+blueprint = Blueprint.decode(original_code)
+print(blueprint)
+new_code = blueprint.encode()
 print(f"old code: {len(original_code)} characters")
 print(f"new code: {len(new_code)} characters")
-new_bluprint = decode(new_code)
-if len(new_code) < len(original_code):
-    clipboard.copy(new_code)
-    print("New code has been copied to your clipboard")
+clipboard.copy(new_code)
+print("New code has been copied to your clipboard")
