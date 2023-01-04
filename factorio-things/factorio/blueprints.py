@@ -68,6 +68,35 @@ class Blueprint:
         return Blueprint(self.size, entities)
 
 
+class BlueprintGrid:
+    tile_size: tuple[int, int]
+    tiles: dict[tuple[int, int], Blueprint]
+
+    def __init__(self, tile_size, tiles):
+        self.tile_size = tile_size
+        self.tiles = tiles
+
+    @classmethod
+    def new(tile_size: tuple[int, int]) -> Self:
+        return BlueprintGrid(tile_size, {})
+
+    def __setitem__(self, position: tuple[int, int], blueprint: Blueprint):
+        assert self.tile_size == blueprint.size
+        self.tiles[position] = blueprint
+
+    def __getitem__(self, position: tuple[int, int]) -> Blueprint:
+        return self.tiles[position]
+
+    def to_blueprint(self) -> Blueprint:
+        entities = {}
+        tile_width, tile_height = self.tile_size
+        for (tile_x, tile_y), tile in self.tiles.items():
+            x, y = tile_x * tile_width, tile_y * tile_height
+            for (dx, dy), entity in tile.entities.items():
+                entities[x + dx, y + dy] = entity
+        return Blueprint(self.tile_size, entities)
+
+
 def decode(encoded: str) -> dict[tuple[float, float], tuple[str, dict[str, str]]]:
     assert encoded[0] == "0"
     compressed = base64.b64decode(encoded[1:])
