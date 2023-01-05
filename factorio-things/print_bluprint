@@ -3,6 +3,13 @@ import clipboard
 from factorio.blueprints import Blueprint
 
 
+def try_call(f):
+    try:
+        return f()
+    except Exception:
+        return None
+
+
 def print_json_representation(code: str):
     import base64
     import json
@@ -20,5 +27,12 @@ print(blueprint)
 new_code = blueprint.encode()
 print(f"old code: {len(original_code)} characters")
 print(f"new code: {len(new_code)} characters")
+blueprint.encode_tile()
+if tile := try_call(lambda: blueprint.encode_tile()):
+    print(f" as tile: {len(tile)} characters")
+    print("the code: ", tile)
+    # print(Blueprint.decode_tile(*blueprint.size, tile))
+    assert blueprint.entities == Blueprint.decode_tile(*blueprint.size, tile).entities
+    assert blueprint == Blueprint.decode_tile(*blueprint.size, tile)
 clipboard.copy(new_code)
 print("New code has been copied to your clipboard")

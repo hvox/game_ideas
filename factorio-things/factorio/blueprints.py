@@ -2,12 +2,21 @@ import zlib
 import base64
 import json
 import math
+from dataclasses import dataclass
 from typing import Self
 
 
 DIRECTED_STRUCTURES = {"transport-belt", "splitter", "express-loader", "underground-belt"}
+ENTITIES = ["transport-belt", "splitter", "underground-belt"]
 
 
+def as_int(x: float) -> int:
+    if x.is_integer():
+        return int(x)
+    raise ValueError(f"{x} is not really an integer")
+
+
+@dataclass
 class Blueprint:
     size: tuple[int, int]
     entities: dict[tuple[float, float], tuple[str, dict[str, str | int]]]
@@ -41,6 +50,7 @@ class Blueprint:
             x, y = position["x"], size[1]-position["y"]
             attrs["direction"] = attrs.get("direction", 0)
             entities[x, y] = (name, attrs)
+        entities = dict(sorted(entities.items(), key=lambda x: (x[0][1], x[0][0])))
         return cls(size, entities)
 
     def encode(self) -> str:
@@ -56,6 +66,31 @@ class Blueprint:
         json_str = json.dumps({"blueprint": json_obj}, separators=(",", ":"))
         compressed = zlib.compress(json_str.encode(), 9)
         return "0" + base64.b64encode(compressed).decode()
+
+    def encode_tile(self) -> str:
+        width, height = self.size
+        entities = bytearray([0] * width * height)
+        for (x, y), (name, attrs) in self.entities.items():
+            pos = width * as_int(y - 0.5) + as_int(x - 0.5)
+            assert 0 <= pos < width * height and entities[pos] == 0
+            entity_id = 1 + ENTITIES.index(name)
+            entities[pos] = entity_id * 4 + attrs["direction"] // 2
+        code = base64.b85encode(entities).decode()
+        lines = (len(code) + 119) // 120
+        line_length = (len(code) + lines - 1) // lines
+        code = "\n".join([code[i:i + line_length] for i in range(0, len(code), line_length)])
+        return code
+
+    @classmethod
+    def decode_tile(cls, width: int, height: int, encoded: str) -> Self:
+        entities = {}
+        encoded_entities = base64.b85decode(encoded.replace("\n", ""))
+        for pos, code in enumerate(encoded_entities):
+            x, y = pos % width + 0.5, pos // width + 0.5
+            name = ENTITIES[code // 4 - 1]
+            attrs = {"direction": code % 4 * 2}
+            entities[x, y] = (name, attrs)
+        return cls((width, height), entities)
 
     def rotated(self, quarters: int) -> Self:
         origin_x, origin_y = (x / 2 for x in self.size)
