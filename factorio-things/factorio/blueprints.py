@@ -49,7 +49,7 @@ class Blueprint:
             position = attrs.pop("position")
             x, y = position["x"], size[1]-position["y"]
             attrs["direction"] = attrs.get("direction", 0)
-            entities[x, y] = (name, attrs)
+            entities[x, y] = (name, dict(sorted(attrs.items())))
         entities = dict(sorted(entities.items(), key=lambda x: (x[0][1], x[0][0])))
         return cls(size, entities)
 
