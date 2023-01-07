@@ -27,7 +27,10 @@ class MainBus:
                     entities[4 * x + dx, y + dy] = (BELT, {"direction": 0})
             # TODO: use target amounts for more accurate splitting
             entities[4*x + 1.5, y + 0.5] = (BELT, {"direction": 0})
-            entities[4*x + 3.0, y + 0.5] = (SPLITTER, {"direction": 0})
+            splitter = (SPLITTER, {"direction": 0})
+            if target_amount > BELT_SPEED / 2:
+                splitter[1]["output_priority"] = "right"
+            entities[4*x + 3.0, y + 0.5] = splitter
             entities[4*x + 2.0, y + 1.5] = (SPLITTER, {"direction": 0, "output_priority": "right"})
             entities[4*x + 3.5, y + 1.5] = (BELT, {"direction": 2})
             assert amount >= target_amount
