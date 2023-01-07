@@ -16,6 +16,9 @@ def as_int(x: float) -> int:
     raise ValueError(f"{x} is not really an integer")
 
 
+Entities = dict[tuple[float, float], tuple[str, dict[str, int | str]]]
+
+
 @dataclass
 class Blueprint:
     size: tuple[int, int]
@@ -24,6 +27,17 @@ class Blueprint:
     def __init__(self, size, entities):
         self.size = size
         self.entities = entities
+
+    @classmethod
+    def from_entities(cls, entities: Entities) -> Self:
+        xs, ys = [x for x, _ in entities], [y for y, _ in entities]
+        min_x, max_x, min_y, max_y = min(xs), max(xs), min(ys), max(ys)
+        min_x, min_y = (math.floor(x - 0.5) for x in (min_x, min_y))
+        max_x, max_y = (math.ceil(x + 0.5) for x in (max_x, max_y))
+        self = cls((max_x - min_x, max_y - min_y), {})
+        for (x, y), entity in entities.items():
+            self.entities[x - min_x, y - min_y] = entity
+        return self
 
     def __str__(self):
         width, height = self.size
