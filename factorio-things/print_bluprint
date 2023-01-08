@@ -27,12 +27,14 @@ print(blueprint)
 new_code = blueprint.encode()
 print(f"old code: {len(original_code)} characters")
 print(f"new code: {len(new_code)} characters")
-blueprint.encode_tile()
-if tile := try_call(lambda: blueprint.encode_tile()):
-    print(f" as tile: {len(tile)} characters")
-    print("the code: ", tile)
-    # print(Blueprint.decode_tile(*blueprint.size, tile))
-    assert blueprint.entities == Blueprint.decode_tile(*blueprint.size, tile).entities
-    assert blueprint == Blueprint.decode_tile(*blueprint.size, tile)
-clipboard.copy(new_code)
-print("New code has been copied to your clipboard")
+# print(int(blueprint))
+if tile_code := try_call(lambda: blueprint.to_tile_code()):
+    print(f" as tile: {len(tile_code)} characters")
+    decoded_tile = Blueprint.from_tile_code(tile_code)
+    # print(decoded_tile)
+    assert blueprint == decoded_tile
+    clipboard.copy(tile_code)
+    print("Tile code has been copied to your clipboard")
+else:
+    clipboard.copy(new_code)
+    print("New code has been copied to your clipboard")

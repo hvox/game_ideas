@@ -1,13 +1,9 @@
-ENCODING = {
-    (): "0",
-    ("CUSTOM",): "1"
-}
+import sys
 
-assert len(set(ENCODING.values())) == len(ENCODING)
-
-
+sys.set_int_max_str_digits(2**31 - 1)
 ENTITY = tuple[str, dict[str, str | int]]
 ENTITIES = dict[tuple[float, float], ENTITY]
+ENCODING = {(): "0", ("CUSTOM",): "1"}
 
 
 def str_to_bin(string: str) -> str:
@@ -38,7 +34,7 @@ def encode_entity(entity: None | ENTITY) -> str:
     result += bin(len(key) // 2 - 1)[2:].zfill(8)
     for i in range(2, len(key), 2):
         result += str_to_bin(key[i])
-        result += str_to_bin(key[i+1])
+        result += str_to_bin(key[i + 1])
     return ENCODING[("CUSTOM",)] + result
 
 
@@ -54,8 +50,8 @@ def decode_entity(binary: str, i: int = 0) -> tuple[ENTITY | None, int]:
             attributes[key[j]] = key[j + 1]
         return (key[0], attributes), i + len(code)
     name, i = bin_to_str(binary, i + len(code))
-    direction = int(binary[i:i+3], 2)
-    attrs_count = int(binary[i+3:i+11], 2)
+    direction = int(binary[i: i + 3], 2)
+    attrs_count = int(binary[i + 3: i + 11], 2)
     i, attributes = i + 11, {"direction": direction}
     for _ in range(attrs_count):
         attr_name, i = bin_to_str(binary, i)
