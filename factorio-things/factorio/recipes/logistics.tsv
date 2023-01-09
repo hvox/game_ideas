@@ -1,0 +1,63 @@
+produced material	required time	ingridients
+arithmetic-combinator	1/2	copper-cable:5, electronic-circuit:5
+artillery-wagon	4	advanced-circuit:20, engine-unit:64, iron-gear-wheel:10, pipe:16, steel-plate:40
+beacon	15	advanced-circuit:20, copper-cable:10, electronic-circuit:20, steel-plate:10
+big-electric-pole	1/2	copper-plate:5, steel-plate:5
+burner-inserter	1/2	iron-gear-wheel:1, iron-plate:1
+car	2	engine-unit:8, iron-plate:20, steel-plate:5
+cargo-wagon	1	iron-gear-wheel:10, iron-plate:20, steel-plate:20
+cliff-explosives	8	empty-barrel:1, explosives:10, grenade:1
+concrete	1	iron-ore:1/10, stone-brick:1/2, water:10
+constant-combinator	1/2	copper-cable:5, electronic-circuit:2
+construction-robot	1/2	electronic-circuit:2, flying-robot-frame:1
+decider-combinator	1/2	copper-cable:5, electronic-circuit:5
+express-splitter	2	advanced-circuit:10, fast-splitter:1, iron-gear-wheel:10, lubricant:80
+express-transport-belt	1/2	fast-transport-belt:1, iron-gear-wheel:10, lubricant:20
+express-underground-belt	1	fast-underground-belt:1, iron-gear-wheel:40, lubricant:20
+fast-inserter	1/2	electronic-circuit:2, inserter:1, iron-plate:2
+fast-splitter	2	electronic-circuit:10, iron-gear-wheel:10, splitter:1
+fast-transport-belt	1/2	iron-gear-wheel:5, transport-belt:1
+fast-underground-belt	1	iron-gear-wheel:20, underground-belt:1
+filter-inserter	1/2	electronic-circuit:4, fast-inserter:1
+fluid-wagon	3/2	iron-gear-wheel:10, pipe:8, steel-plate:16, storage-tank:1
+green-wire	1/2	copper-cable:1, electronic-circuit:1
+hazard-concrete	1/40	concrete:1
+inserter	1/2	electronic-circuit:1, iron-gear-wheel:1, iron-plate:1
+iron-axe	1/2	iron-plate:3, iron-stick:2
+iron-chest	1/2	iron-plate:8
+lamp	1/2	electronic-circuit:1, iron-plate:1, iron-stick:3
+landfill	1/2	stone:20
+locomotive	4	electronic-circuit:10, engine-unit:20, steel-plate:30
+logistic-chest-active-provider	1/2	advanced-circuit:1, electronic-circuit:3, steel-chest:1
+logistic-chest-buffer	1/2	advanced-circuit:1, electronic-circuit:3, steel-chest:1
+logistic-chest-passive-provider	1/2	advanced-circuit:1, electronic-circuit:3, steel-chest:1
+logistic-chest-requester	1/2	advanced-circuit:1, electronic-circuit:3, steel-chest:1
+logistic-chest-storage	1/2	advanced-circuit:1, electronic-circuit:3, steel-chest:1
+logistic-robot	1/2	advanced-circuit:2, flying-robot-frame:1
+long-handed-inserter	1/2	inserter:1, iron-gear-wheel:1, iron-plate:1
+medium-electric-pole	1/2	copper-plate:2, steel-plate:2
+pipe	1/2	iron-plate:1
+pipe-to-ground	1/4	iron-plate:5/2, pipe:5
+power-switch	2	copper-cable:5, electronic-circuit:2, iron-plate:5
+programmable-speaker	2	copper-cable:5, electronic-circuit:4, iron-plate:5
+pump	2	engine-unit:1, pipe:1, steel-plate:1
+rail	1/4	iron-stick:1/2, steel-plate:1/2, stone:1/2
+rail-chain-signal	1/2	electronic-circuit:1, iron-plate:5
+rail-signal	1/2	electronic-circuit:1, iron-plate:5
+red-wire	1/2	copper-cable:1, electronic-circuit:1
+refined-concrete	3/2	concrete:2, iron-stick:4/5, steel-plate:1/10, water:10
+refined-hazard-concrete	1/40	refined-concrete:1
+roboport	5	advanced-circuit:45, iron-gear-wheel:45, steel-plate:45
+small-electric-pole	1/4	copper-cable:1, wood:1
+splitter	1	electronic-circuit:5, iron-plate:5, transport-belt:4
+stack-filter-inserter	1/2	electronic-circuit:5, stack-inserter:1
+stack-inserter	1/2	advanced-circuit:1, electronic-circuit:15, fast-inserter:1, iron-gear-wheel:15
+steel-chest	1/2	steel-plate:8
+stone-brick	7/2	stone:2
+storage-tank	3	iron-plate:20, steel-plate:5
+substation	1/2	advanced-circuit:5, copper-plate:5, steel-plate:10
+tank	8	advanced-circuit:10, engine-unit:32, iron-gear-wheel:15, steel-plate:50
+train-stop	1/2	electronic-circuit:5, iron-plate:10, steel-plate:3
+transport-belt	1/4	iron-gear-wheel:1/2, iron-plate:1/2
+underground-belt	1/2	iron-plate:5, transport-belt:5/2
+wooden-chest	1/2	wood:4
