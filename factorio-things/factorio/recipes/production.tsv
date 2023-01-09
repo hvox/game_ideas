@@ -1,4 +1,4 @@
-produced material	required time	ingridients
+produced material	required time	ingredients
 accumulator	10	battery:5, iron-plate:2
 assembling-machine-1	1/2	electronic-circuit:3, iron-gear-wheel:5, iron-plate:9
 assembling-machine-2	1/2	assembling-machine-1:1, electronic-circuit:3, iron-gear-wheel:5, iron-plate:9
