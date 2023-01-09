@@ -84,3 +84,10 @@ def str_to_tile(grid_string: str) -> Blueprint:
         else:
             raise ValueError("What is {char!r}?")
     return Blueprint((size, size), entities)
+
+
+DEFAULT_TILES = {
+    "1-input": "*p(4bMnD+>WduCRgkqwYC?*Q%))(pv^@aK(*062cwr$(CZQGV5x&",
+    "2-input": "{Qv*||NsC0|No~&3$&mGEwC#ipp1Yr0?G(@lnKQ|F;PsE3ElcaeWAWkU&I==ZQHhO+qP}nvPKs",
+    "3-input": "{Qv*||NsC0|Nr;@|NsC0|NsC0|5`4zTxhw_a-rqQVpm2$83APklo9Z#32K6xpeCr9g>HSJzEEGNFMtXvsGvfuVcWKC+qP}nwk?Zv0R",
+}

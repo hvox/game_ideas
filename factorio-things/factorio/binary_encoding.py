@@ -3,7 +3,25 @@ import sys
 sys.set_int_max_str_digits(2**31 - 1)
 ENTITY = tuple[str, dict[str, str | int]]
 ENTITIES = dict[tuple[float, float], ENTITY]
-ENCODING = {(): "0", ("CUSTOM",): "1"}
+ENCODING = {
+    (): '0',
+    ('CUSTOM',): '10110000',
+    ('assembling-machine-2', 0): '10100',
+    ('fast-inserter', 0): '101101',
+    ('fast-inserter', 2): '10001',
+    ('fast-inserter', 6): '10111011',
+    ('inserter', 2): '10111010',
+    ('inserter', 6): '101111',
+    ('long-handed-inserter', 0): '1011100',
+    ('small-electric-pole', 0): '10011',
+    ('splitter', 6): '10110001',
+    ('transport-belt', 0): '1011001',
+    ('transport-belt', 2): '111',
+    ('transport-belt', 4): '10101',
+    ('transport-belt', 6): '110',
+    ('underground-belt', 2, 'type', 'input'): '10000',
+    ('underground-belt', 2, 'type', 'output'): '10010',
+}
 
 
 def str_to_bin(string: str) -> str:
