@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+from sys import stderr
+from fractions import Fraction
+import clipboard
+from factorio.entities import ENTITIES
+from factorio.recipes import RECIPES
+from factorio.blueprints import Blueprint
+
+
+blueprint = Blueprint.decode(clipboard.paste())
+cost: dict[str, Fraction] = {}
+errors: set[str] = set()
+for entity_info in blueprint.entities.values():
+    entity = entity_info[0]
+    if entity not in ENTITIES:
+        error = f"ERROR: {entity!r} is not found in entities.tsv"
+        if error not in errors:
+            print(error, file=stderr)
+            errors.add(error)
+        continue
+    for material, amount in RECIPES[entity].ingredients.items():
+        if material in cost:
+            cost[material] += amount
+        else:
+            cost[material] = amount
+name_lenght = max(map(len, cost.keys()))
+for amount, material in reversed(sorted((x, m) for m, x in cost.items())):
+    print(f" {material:{name_lenght}} : {amount}")
