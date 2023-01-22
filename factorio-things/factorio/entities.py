@@ -1,3 +1,5 @@
+from pathlib import Path
+
 EntityAttributes = dict[str, object]
 Entity = tuple[str, EntityAttributes]
 Entities = dict[tuple[float, float], Entity]
@@ -48,3 +50,15 @@ def assembler(lvl: int, produced_material: str = "", direction: int = 0) -> Enti
     if produced_material:
         attributes["recipe"] = produced_material
     return (name, attributes)
+
+
+def read_entities(table_name: str) -> dict[str, tuple[int, int]]:
+    entities = {}
+    path = Path(__file__).with_suffix("") / "../data" / (table_name + ".tsv")
+    for row in path.resolve().read_text().strip("\n").split("\n")[1:]:
+        entity, width, height = row.split("\t")
+        entities[entity] = (int(width), int(height))
+    return entities
+
+
+ENTITIES: dict[str, tuple[int, int]] = read_entities("entities")
