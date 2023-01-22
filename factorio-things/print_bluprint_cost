@@ -7,6 +7,13 @@ from factorio.recipes import RECIPES
 from factorio.blueprints import Blueprint
 
 
+TOOLKIT = {
+    "big-electric-pole", "filter-inserter", "inserter",
+    "pipe", "pipe-to-ground", "small-electric-pole",
+    "transport-belt", "underground-belt",
+}
+
+
 blueprint = Blueprint.decode(clipboard.paste())
 cost: dict[str, Fraction] = {}
 errors: set[str] = set()
@@ -18,6 +25,9 @@ for entity_info in blueprint.entities.values():
             print(error, file=stderr)
             errors.add(error)
         continue
+    if entity in TOOLKIT:
+        cost[entity] = cost.get(entity, Fraction(0)) + 1
+        continue
     for material, amount in RECIPES[entity].ingredients.items():
         if material in cost:
             cost[material] += amount
@@ -25,4 +35,5 @@ for entity_info in blueprint.entities.values():
             cost[material] = amount
 name_lenght = max(map(len, cost.keys()))
 for amount, material in reversed(sorted((x, m) for m, x in cost.items())):
-    print(f" {material:{name_lenght}} : {amount}")
+    chests = float(amount / (48 * 100))
+    print(f" {material:{name_lenght}} : {str(amount):5} = {chests:0.4f} chests")
