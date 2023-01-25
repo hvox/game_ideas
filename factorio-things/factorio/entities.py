@@ -13,12 +13,14 @@ ASSEMBLY_MACHINES = ["assembly-machine-1", "assembly-machine-2", "assembly-machi
 def belt(lvl: int, direction: int) -> Entity:
     assert 1 <= lvl <= 3
     name = BELTS[lvl - 1]
+    assert direction % 2 == 0
     return (name, {"direction": direction % 8 // 2 * 2})
 
 
 def underground(lvl: int, direction: int) -> tuple[Entity, Entity]:
     assert 1 <= lvl <= 3
     name = UNDERGROUND_BELTS[lvl - 1]
+    assert direction % 2 == 0
     inp = {"direction": direction % 8 // 2 * 2, "type": "input"}
     out = {"direction": direction % 8 // 2 * 2, "type": "output"}
     return ((name, inp), (name, out))
@@ -35,7 +37,7 @@ def splitter(
     name = SPLITTERS[lvl - 1]
     attributes: EntityAttributes = {"direction": direction % 8 // 2 * 2}
     if input_prioriy:
-        attributes["input_prioriy"] = ["", "right", "left"][input_prioriy]
+        attributes["input_priority"] = ["", "right", "left"][input_prioriy]
     if output_priority:
         attributes["output_priority"] = ["", "right", "left"][output_priority]
     if filter_material:
