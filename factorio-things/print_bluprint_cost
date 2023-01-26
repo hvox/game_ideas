@@ -15,8 +15,9 @@ TOOLKIT = {
 
 
 blueprint = Blueprint.decode(clipboard.paste())
-cost: dict[str, Fraction] = {}
 errors: set[str] = set()
+print(" ingridients ".center(80, "-"))
+cost: dict[str, Fraction] = {}
 for entity_info in blueprint.entities.values():
     entity = entity_info[0]
     if entity not in ENTITIES:
@@ -36,4 +37,18 @@ for entity_info in blueprint.entities.values():
 name_lenght = max(map(len, cost.keys()))
 for amount, material in reversed(sorted((x, m) for m, x in cost.items())):
     chests = float(amount / (48 * 100))
-    print(f" {material:{name_lenght}} : {str(amount):5} = {chests:0.4f} chests")
+    print(f" {material:{name_lenght}} : {str(amount):3} = {chests:0.4f} chests")
+
+print(" raw cost ".center(80, "-"))
+raw_cost: dict[str, Fraction] = {}
+while cost:
+    material, amount = cost.popitem()
+    if material not in RECIPES:
+        raw_cost[material] = raw_cost.get(material, Fraction(0)) + amount
+        continue
+    for ingr, ingridient_amount in RECIPES[material].ingredients.items():
+        cost[ingr] = cost.get(ingr, Fraction(0)) + amount * ingridient_amount
+name_lenght = max(map(len, raw_cost.keys()))
+for amount, material in reversed(sorted((x, m) for m, x in raw_cost.items())):
+    chests = float(amount / (48 * 100))
+    print(f" {material:{name_lenght}} : {str(amount):3} = {chests:0.4f} chests")
