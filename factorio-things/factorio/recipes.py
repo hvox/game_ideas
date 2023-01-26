@@ -1,6 +1,7 @@
 from fractions import Fraction
 from pathlib import Path
 from typing import NamedTuple
+from functools import cache
 
 
 class Recipe(NamedTuple):
@@ -30,3 +31,21 @@ PRODUCTION = read_recipes("production")
 INTERMEDIATE = read_recipes("intermediate_products")
 COMBAT = read_recipes("combat")
 RECIPES = LOGISTICS | PRODUCTION | INTERMEDIATE | COMBAT
+
+
+def topologically_sorted_materials(recipes: dict[str, Recipe]) -> list[str]:
+    @cache
+    def get_lvl(material: str):
+        if recipe := recipes.get(material):
+            return 1 + max(map(get_lvl, recipe.ingredients))
+        return 1
+
+    materials: set[tuple[int, str]] = set()
+    for material, recipe in recipes.items():
+        materials.add((get_lvl(material), material))
+        for material in recipe.ingredients:
+            materials.add((get_lvl(material), material))
+    return [material for _, material in sorted(materials)]
+
+
+MATERIALS = {m: i for i, m in enumerate(topologically_sorted_materials(RECIPES))}
