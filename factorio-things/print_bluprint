@@ -15,7 +15,7 @@ def print_json_representation(code: str):
     import json
     import zlib
 
-    compressed = base64.b64decode(original_code[1:])
+    compressed = base64.b64decode(code[1:])
     decoded = json.loads(zlib.decompress(compressed).decode())
     print(decoded)
 
