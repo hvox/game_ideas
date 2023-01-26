@@ -14,7 +14,7 @@ def get_line_left(lines: list[tuple[str, int]], material: str) -> tuple[int, int
     raise ValueError(f"{material} not found in the main bus")
 
 
-def main_bus(lines: list[tuple[str, int]], splits: list[list[str]]) -> Entities:
+def main_bus(lines: list[tuple[str, int]], splits: list[list[str | None]]) -> Entities:
     entities: Entities = {}
     y0 = 0
     # x1 = (len(lines) - 1) * 2 + sum(width for _, width in lines)
@@ -31,6 +31,9 @@ def main_bus(lines: list[tuple[str, int]], splits: list[list[str]]) -> Entities:
             continue
         *inputs, output = split
         for input in inputs:
+            if input is None:
+                y0 += 1
+                continue
             index, x = get_line_left(lines, input)
             _, width = lines[index]
             if (x + width - 0.5, y0 - 0.5) in entities:
@@ -50,10 +53,14 @@ def main_bus(lines: list[tuple[str, int]], splits: list[list[str]]) -> Entities:
                 x += width + 2
                 entities[x - 0.5, y0 + 0.5] = right
             y0 += 1
+        if output is None:
+            y0 += 2
+            continue
         index, x = get_line_left(lines, output)
         _, width = lines[index]
         del entities[x + width - 0.5, y0 + 1.5]
         entities[x + width, y0 + 1.5] = splitter(1, 0, 1, -1, output)
+        # TODO: check if top-going splitters work here as good as at inputs
         for dx in range(1, width):
             del entities[x + width - dx - 0.5, y0 - dx + 1.5]
             del entities[x + width - dx + 0.5, y0 - dx + 1.5]
