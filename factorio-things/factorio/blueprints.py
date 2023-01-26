@@ -72,7 +72,7 @@ class Blueprint:
     def encode(self) -> str:
         (width, height), entities = self.size, []
         for i, ((x, y), (name, attrs)) in enumerate(self.entities.items()):
-            attrs = attrs | {"name": name, "entity_number": i}
+            attrs = attrs | {"name": name, "entity_number": i + 1}
             if attrs["direction"] == 0:
                 del attrs["direction"]
             entities.append(attrs | {"position": {"x": x, "y": height - y}})
