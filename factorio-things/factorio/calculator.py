@@ -30,7 +30,8 @@ def get_total_for_one_product_set(target_materials: dict[str, Rat]) -> dict[str,
 
 
 def get_total(*alternative_product_sets: dict[str, Rat]) -> dict[str, Rat]:
-    return dict_max(*(get_total_for_one_product_set(prod) for prod in alternative_product_sets))
+    total = dict_max(*(get_total_for_one_product_set(prod) for prod in alternative_product_sets))
+    return dict(sorted(total.items(), key=lambda p: (MATERIALS[p[0]], p[0])))
 
 
 def rationalize_values(dct: dict) -> dict[str, Rat]:
