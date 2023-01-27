@@ -68,9 +68,9 @@ def main_bus(lines: list[tuple[str, int]], splits: list[list[str | None]]) -> En
         x += width + 1
         entities[x - 0.5, y0 + 0.5] = belt(1, 0)
         for _, width in lines[index+1:]:
-            input, output = underground(1, -2)
-            entities[x + 0.5, y0 + 0.5] = output
+            down, up = underground(1, -2)
+            entities[x + 0.5, y0 + 0.5] = down
             x += width + 2
-            entities[x - 0.5, y0 + 0.5] = input
+            entities[x - 0.5, y0 + 0.5] = up
         y0 += 2
     return entities
