@@ -1,9 +1,8 @@
-import materials
-from materials import Material
 from fractions import Fraction as Rat
+from .libs.dict_arithmetic import dict_max
+from .recipes import MATERIALS, RECIPES
 
 
-# TODO: use datastructures with this operation implemented
 def dict_diff(dict1: dict, dict2: dict) -> dict:
     result = dict(dict1)
     for key in dict2:
@@ -20,25 +19,19 @@ def dict_and(dict1: dict, dict2: dict) -> dict:
     return result
 
 
-def get_total(target_materials: dict[Material, Rat]) -> dict[Material, Rat]:
+def get_total_for_one_product_set(target_materials: dict[str, Rat]) -> dict[str, Rat]:
     total = dict(target_materials)
-    # TODO: use something like queue to optimize that
-    for material in reversed(sorted(materials.MATERIALS)):
-        if material not in total:
+    for material in reversed(MATERIALS):
+        if material not in total or material not in RECIPES:
             continue
-        for ingridient, amount in material.ingredients.items():
-            total[ingridient] = total.get(ingridient, 0) + amount * total[material]
-    return dict(total)
+        for ingridient, amount in RECIPES[material].ingredients.items():
+            total[ingridient] = total.get(ingridient, Rat(0)) + amount * total[material]
+    return total
 
 
-def rationalize_values(dct: dict) -> dict[Material, Rat]:
+def get_total(*alternative_product_sets: dict[str, Rat]) -> dict[str, Rat]:
+    return dict_max(*(get_total_for_one_product_set(prod) for prod in alternative_product_sets))
+
+
+def rationalize_values(dct: dict) -> dict[str, Rat]:
     return dict((((k, Rat(v).limit_denominator(100)) for k, v in dct.items())))
-
-
-if __name__ == "__main__":
-    target = {
-        materials.INSERTER: 1,
-    }
-    total = get_total(rationalize_values(target))
-    for material, amount in reversed(sorted(total.items())):
-        print(material, ":", amount)
