@@ -68,7 +68,7 @@ def main_bus(lines: list[tuple[str, int]], splits: list[list[str | None]]) -> En
         for dx in range(1, width):
             del entities[x + width - dx - 0.5, y0 - dx + 1.5]
             del entities[x + width - dx + 0.5, y0 - dx + 1.5]
-            entities[x + width - dx, y0 - dx + 1.5] = splitter(1, 1, 0, 1)
+            entities[x + width - dx, y0 - dx + 1.5] = splitter(1, 0, 1, 1)
         x += width + 1
         entities[x - 0.5, y0 + 0.5] = belt(1, 0)
         for _, width in lines[index+1:]:

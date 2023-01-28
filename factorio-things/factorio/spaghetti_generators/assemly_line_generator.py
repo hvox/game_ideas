@@ -9,10 +9,12 @@ import itertools
 
 BELT_THROUGHPUT = 15
 ASSEMBLY_SPEED = Fraction("0.75")
-MAX_INSERTER_SPEED = Fraction("2.50")  # TODO: add support for fast inserters
+MAX_INSERTER_SPEED = Fraction("2.25")  # TODO: add support for fast inserters
 
 
 def assembly_line(product: str, throughput: Fraction) -> tuple[list[str | None], Entities]:
+    if throughput > BELT_THROUGHPUT:
+        raise ValueError("Throughput of output material is unachievable")
     recipe = RECIPES[product]
     inputs = {inp: recipe.ingredients[inp] * throughput for inp in sorted(
         (inp for inp, _ in recipe.ingredients.items()), key=lambda x: MATERIALS[x])}
@@ -29,7 +31,7 @@ def assembly_line(product: str, throughput: Fraction) -> tuple[list[str | None],
         case _:
             # TODO: Support four input recipes using inner splitter
             raise ValueError(f"Unsupported number of inputs: {len(inputs)}")
-    assembly_throughput = ASSEMBLY_SPEED / recipe.creation_time
+    assembly_throughput = min(ASSEMBLY_SPEED / recipe.creation_time, MAX_INSERTER_SPEED)
     for ingridient_amount in recipe.ingredients.values():
         ingridient_throughput = MAX_INSERTER_SPEED / ingridient_amount
         assembly_throughput = min(assembly_throughput, ingridient_throughput)
@@ -112,9 +114,8 @@ def assembly_line(product: str, throughput: Fraction) -> tuple[list[str | None],
     entities[x + 0.5, y + 0.5] = belt(1, 0)
     entities[x + 1.5, y + 0.5] = belt(1, -2)
     entities[x + 1.5, y + 1.5] = belt(1, 4)
-    if assemblers % 4 == 2:
-        if assemblers == 2:
-            del entities[x1 - 1.5, y1 + 2.5]
+    if assemblers == 2:
+        del entities[x1 - 1.5, y1 + 2.5]
         del entities[x1 - 0.5, y1 + 2.5]
     for pos, entity in (pair for group in inserters for pair in group.items()):
         entities[pos] = entity
