@@ -34,7 +34,7 @@ def assembly_line(product: str, throughput: Fraction) -> tuple[list[str | None],
         ingridient_throughput = MAX_INSERTER_SPEED / ingridient_amount
         assembly_throughput = min(assembly_throughput, ingridient_throughput)
     assemblers = ceil(throughput / assembly_throughput / 2) * 2
-    print("assemblers:", throughput / assembly_throughput, "->", assemblers)
+    print(f"assemblers for {product}:", float(throughput / assembly_throughput), "->", assemblers)
     # Assembly bottom left
     x0 = 1 if len(inputs) < 4 else 4
     y0 = (len(inputs) > 1) + len(inputs) - 1
