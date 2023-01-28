@@ -34,5 +34,20 @@ def get_total(*alternative_product_sets: dict[str, Rat]) -> dict[str, Rat]:
     return dict(sorted(total.items(), key=lambda p: (MATERIALS[p[0]], p[0])))
 
 
+def get_total_assembly_made(*alternative_product_sets: dict[str, Rat]) -> dict[str, Rat]:
+    totals = []
+    for total in map(dict, alternative_product_sets):
+        for material in reversed(MATERIALS):
+            if material not in total:
+                continue
+            if material not in RECIPES or RECIPES[material].facility != "assembler":
+                continue
+            for ingridient, amount in RECIPES[material].ingredients.items():
+                total[ingridient] = total.get(ingridient, Rat(0)) + amount * total[material]
+        totals.append(total)
+    total = dict_max(*totals)
+    return dict(sorted(total.items(), key=lambda p: (MATERIALS[p[0]], p[0])))
+
+
 def rationalize_values(dct: dict) -> dict[str, Rat]:
     return dict((((k, Rat(v).limit_denominator(100)) for k, v in dct.items())))
