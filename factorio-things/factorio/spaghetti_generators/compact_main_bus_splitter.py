@@ -2,6 +2,7 @@ from ..entities import Entities, EntityAttributes, belt, underground, assembler,
 from fractions import Fraction
 from dataclasses import dataclass
 from typing import Self
+from ..recipes import MATERIALS
 import itertools
 
 
@@ -15,6 +16,9 @@ def get_line_left(lines: list[tuple[str, int]], material: str) -> tuple[int, int
 
 
 def main_bus(lines: list[tuple[str, int]], splits: list[list[str | None]]) -> Entities:
+    for (prev_line, _), (next_line, _) in zip(lines, lines[1:]):
+        if MATERIALS[prev_line] < MATERIALS[next_line]:
+            raise ValueError(f"Materials {prev_line} and {next_line} are in wrong order")
     entities: Entities = {}
     y0 = 0
     # x1 = (len(lines) - 1) * 2 + sum(width for _, width in lines)
@@ -69,8 +73,8 @@ def main_bus(lines: list[tuple[str, int]], splits: list[list[str | None]]) -> En
         entities[x - 0.5, y0 + 0.5] = belt(1, 0)
         for _, width in lines[index+1:]:
             down, up = underground(1, -2)
-            entities[x + 0.5, y0 + 0.5] = down
+            entities[x + 0.5, y0 + 0.5] = up
             x += width + 2
-            entities[x - 0.5, y0 + 0.5] = up
+            entities[x - 0.5, y0 + 0.5] = down
         y0 += 2
     return entities
