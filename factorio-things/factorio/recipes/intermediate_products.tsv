@@ -1,36 +1,36 @@
-produced material	required time	ingredients
-advanced-circuit	6	copper-cable:4, electronic-circuit:2, plastic-bar:2
-battery	5	copper-plate:1, iron-plate:1, sulfuric-acid:20
-copper-cable	1/4	copper-plate:1/2
-copper-plate	7/2	copper-ore:1
-electric-engine-unit	10	electronic-circuit:2, engine-unit:1, lubricant:15
-electronic-circuit	1/2	copper-cable:3, iron-plate:1
-empty-barrel	1	steel-plate:1
-engine-unit	10	iron-gear-wheel:1, pipe:2, steel-plate:1
-explosives	5/2	coal:1/2, sulfur:1/2, water:5
-flying-robot-frame	20	battery:2, electric-engine-unit:1, electronic-circuit:3, steel-plate:1
-high-tech-science-pack	7	battery:1/2, copper-cable:15, processing-unit:3/2, speed-module:1/2
-iron-gear-wheel	1/2	iron-plate:2
-iron-plate	7/2	iron-ore:1
-iron-stick	1/4	iron-plate:1/2
-low-density-structure	30	copper-plate:5, plastic-bar:5, steel-plate:10
-lubricant	1/10	heavy-oil:1
-military-science-pack	5	grenade:1/2, gun-turret:1/2, piercing-rounds-magazine:1/2
-nuclear-fuel	60	rocket-fuel:1, uranium-235:1
-plastic-bar	1/2	coal:1/2, petroleum-gas:10
-processing-unit	10	advanced-circuit:2, electronic-circuit:20, sulfuric-acid:5
-production-science-pack	7	electric-engine-unit:1/2, electric-furnace:1/2
-rocket-control-unit	30	processing-unit:1, speed-module:1
-rocket-fuel	30	solid-fuel:10
-rocket-part	3	low-density-structure:10, rocket-control-unit:10, rocket-fuel:10
-satellite	5	accumulator:100, low-density-structure:100, processing-unit:100, radar:5, rocket-fuel:50, solar-panel:100
-science-pack-1	5	copper-plate:1, iron-gear-wheel:1
-science-pack-2	6	inserter:1, transport-belt:1
-science-pack-3	12	advanced-circuit:1, electric-mining-drill:1, engine-unit:1
-space-science-pack	3/10	rocket-part:1/10, satellite:1/1000
-steel-plate	35	iron-plate:5
-sulfur	1/2	petroleum-gas:15, water:15
-sulfuric-acid	1/50	iron-plate:1/50, sulfur:1/10, water:2
-uranium-fuel-cell	1	iron-plate:1, uranium-235:1/10, uranium-238:19/10
-used-up-uranium-fuel-cell	200	uranium-fuel-cell:1
-wood	1/4	raw-wood:1/2
+produced material	required time	facility	ingredients
+advanced-circuit	6	assembler	copper-cable:4, electronic-circuit:2, plastic-bar:2
+battery	5	chemical plant	copper-plate:1, iron-plate:1, sulfuric-acid:20
+copper-cable	1/4	assembler	copper-plate:1/2
+copper-plate	7/2	furnace	copper-ore:1
+electric-engine-unit	10	assembler	electronic-circuit:2, engine-unit:1, lubricant:15
+electronic-circuit	1/2	assembler	copper-cable:3, iron-plate:1
+empty-barrel	1	assembler	steel-plate:1
+engine-unit	10	assembler	iron-gear-wheel:1, pipe:2, steel-plate:1
+explosives	5/2	chemical plant	coal:1/2, sulfur:1/2, water:5
+flying-robot-frame	20	assembler	battery:2, electric-engine-unit:1, electronic-circuit:3, steel-plate:1
+high-tech-science-pack	7	assembler	battery:1/2, copper-cable:15, processing-unit:3/2, speed-module:1/2
+iron-gear-wheel	1/2	assembler	iron-plate:2
+iron-plate	7/2	furnace	iron-ore:1
+iron-stick	1/4	assembler	iron-plate:1/2
+low-density-structure	30	assembler	copper-plate:5, plastic-bar:5, steel-plate:10
+lubricant	1/10	chemical plant	heavy-oil:1
+military-science-pack	5	assembler	grenade:1/2, gun-turret:1/2, piercing-rounds-magazine:1/2
+nuclear-fuel	60	chemical plant	rocket-fuel:1, uranium-235:1
+plastic-bar	1/2	chemical plant	coal:1/2, petroleum-gas:10
+processing-unit	10	assembler	advanced-circuit:2, electronic-circuit:20, sulfuric-acid:5
+production-science-pack	7	assembler	electric-engine-unit:1/2, electric-furnace:1/2
+rocket-control-unit	30	assembler	processing-unit:1, speed-module:1
+rocket-fuel	30	assembler	solid-fuel:10
+rocket-part	3	rocket silo	low-density-structure:10, rocket-control-unit:10, rocket-fuel:10
+satellite	5	assembler	accumulator:100, low-density-structure:100, processing-unit:100, radar:5, rocket-fuel:50, solar-panel:100
+science-pack-1	5	assembler	copper-plate:1, iron-gear-wheel:1
+science-pack-2	6	assembler	inserter:1, transport-belt:1
+science-pack-3	12	assembler	advanced-circuit:1, electric-mining-drill:1, engine-unit:1
+space-science-pack	3/10	rocket silo	rocket-part:1/10, satellite:1/1000
+steel-plate	35	furnace	iron-plate:5
+sulfur	1/2	chemical plant	petroleum-gas:15, water:15
+sulfuric-acid	1/50	chemical plant	iron-plate:1/50, sulfur:1/10, water:2
+uranium-fuel-cell	1	chemical plant	iron-plate:1, uranium-235:1/10, uranium-238:19/10
+used-up-uranium-fuel-cell	200	nuclear reactor	uranium-fuel-cell:1
+wood	1/4	assembler	raw-wood:1/2

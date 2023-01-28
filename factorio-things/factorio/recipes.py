@@ -5,6 +5,7 @@ from functools import cache
 
 
 class Recipe(NamedTuple):
+    facility: str
     creation_time: Fraction
     ingredients: dict[str, Fraction]
 
@@ -19,10 +20,10 @@ def read_recipes(item_group: str) -> dict[str, Recipe]:
     path = Path(__file__).with_suffix("") / (item_group + ".tsv")
     for row in path.read_text().strip("\n").split("\n")[1:]:
         ingredients = {}
-        material, creation_time, rest = row.split("\t")
+        material, creation_time, facility, rest = row.split("\t")
         for ingridient, amount in (ing.split(":") for ing in rest.split(", ")):
             ingredients[ingridient] = Fraction(amount)
-        recipes[material] = Recipe(Fraction(creation_time), ingredients)
+        recipes[material] = Recipe(facility, Fraction(creation_time), ingredients)
     return recipes
 
 
