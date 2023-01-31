@@ -1,3 +1,4 @@
+from fractions import Fraction
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +10,7 @@ BELTS = ["transport-belt", "fast-transport-belt", "express-transport-belt"]
 UNDERGROUND_BELTS = ["underground-belt", "fast-underground-belt", "express-underground-belt"]
 SPLITTERS = ["splitter", "fast-splitter", "express-splitter"]
 ASSEMBLY_MACHINES = ["assembling-machine-1", "assembling-machine-2", "assembling-machine-3"]
-INSERTERS = ["inserter"]
+INSERTERS = ["inserter", "fast-inserter"]
 ELECTRIC_POLES = ["small-electric-pole", "medium-electric-pole", "big-electric-pole", "substation"]
 
 
@@ -21,10 +22,22 @@ def belt(lvl: int, direction: int) -> Entity:
 
 
 def inserter(lvl: int, direction: int) -> Entity:
-    assert 1 <= lvl <= 1
+    assert 1 <= lvl <= 2
     name = INSERTERS[lvl - 1]
     assert direction % 2 == 0
     return (name, {"direction": direction % 8 // 2 * 2})
+
+
+def inserter_with_throughput(throughput: Fraction, direction: int) -> None | Entity:
+    if throughput == 0:
+        return None
+    if throughput <= 2.25:
+        lvl = 1
+    elif throughput <= 6.00:
+        lvl = 2
+    else:
+        raise ValueError("Throughput is unachievable by inserter")
+    return inserter(lvl, direction)
 
 
 def underground(lvl: int, direction: int) -> tuple[Entity, Entity]:
@@ -90,7 +103,10 @@ def entity_to_python(entity: Entity) -> str:
         direction = (int(attrs["direction"]) + 2) % 8 - 2
         return f"belt({lvl}, {direction})"
     elif name in UNDERGROUND_BELTS:
-        ...  # TODO: support underground belts
+        lvl = UNDERGROUND_BELTS.index(name) + 1
+        direction = (int(attrs["direction"]) + 2) % 8 - 2
+        typ = ["input", "output"].index(attrs["type"])
+        return f"underground({lvl}, {direction})[{typ}]"
     elif name in INSERTERS:
         lvl = INSERTERS.index(name) + 1
         direction = (attrs["direction"] + 2) % 8 - 2
