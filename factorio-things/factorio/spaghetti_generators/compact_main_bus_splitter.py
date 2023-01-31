@@ -90,17 +90,17 @@ def tight_main_bus(lines: list[str], forks: Forks) -> Entities:
     for y, current_row_fork in enumerate(forks):
         if current_row_fork is None:
             continue
-        fork_material, is_output = current_row_fork
+        fork_material, typ = current_row_fork
         i = lines.index(fork_material)
-        entities[len(lines) + 0.5, y + 0.5] = belt(1, 2 if is_output else 0)
-        if is_output:
+        entities[len(lines) + 0.5, y + 0.5] = belt(1, 2 if typ == "out" else 0)
+        if typ == "out":
             del entities[len(lines) - 0.5, y - 0.5]
             entities[len(lines), y - 0.5] = splitter(1, 0, 0, 1)
         else:
             del entities[len(lines) - 0.5, y + 1.5]
             entities[len(lines), y + 1.5] = splitter(1, 0, 1, -1, fork_material)
         for dy, j in enumerate(reversed(range(i + 1, len(lines))), 1):
-            if not is_output:
+            if typ == "in":
                 dy -= 2
             del entities[j - 0.5, y - dy - 0.5]
             del entities[j + 0.5, y - dy - 0.5]
