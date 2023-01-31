@@ -11,11 +11,6 @@ from ..assemly_line_generator import assembly_line
 
 BELT_SPEED = 15
 
-# TODO: I am fucking here...
-# I was trying to put together assembly line genaration and main bus splitter4
-# Also it might as well do calculations about what intermideate ingridients are needed and
-# in what amounts.
-
 
 def get_total_products(*alternative_product_sets: dict[str, Fraction]):
     totals = []
