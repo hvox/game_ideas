@@ -34,19 +34,19 @@ FACILITIES = {
 }
 ALIASES = {
     "science-packs": [
-        "science-pack-1",
-        "science-pack-2",
-        "military-science-pack",
-        "science-pack-3",
-        "production-science-pack",
-        "utility-science-pack",
-        "space-science-pack",
-    ]
+        ("science-pack-1", 1),
+        ("science-pack-2", 1),
+        ("military-science-pack", 1),
+        ("science-pack-3", 1),
+        ("production-science-pack", 1),
+        ("utility-science-pack", 1),
+        ("space-science-pack", 1),
+    ],
 }
 
 
-def main(products: dict[str, Fraction]):
-    total = get_total(products)
+def main(*products: dict[str, Fraction]):
+    total = get_total(*products)
     print(" material".ljust(26), "IPM        belts/tubes")
     try:
         terminal_width, _ = get_terminal_size()
@@ -76,9 +76,12 @@ def main(products: dict[str, Fraction]):
 
 if __name__ == "__main__":
     args = __import__("docopt").docopt(__doc__)
-    products = defaultdict(lambda: Fraction(0))
+    products = [defaultdict(lambda: Fraction(0))]
     errors_encountered = False
     for material_description in args["<materials>"]:
+        if material_description == "OR":
+            products.append(defaultdict(lambda: Fraction(0)))
+            continue
         try:
             material, amount_str = material_description.split(":", 1)
             amount = Fraction(amount_str)
@@ -88,15 +91,15 @@ if __name__ == "__main__":
             errors_encountered = True
             continue
         if material in MATERIALS:
-            products[material] += amount
-        elif materials := ALIASES.get(material):
-            for material in materials:
-                products[material] += amount
+            products[-1][material] += amount
+        elif (materials := ALIASES.get(material)) is not None:  # lua whould handle that better
+            for material, material_amount in materials:
+                products[-1][material] += amount * material_amount
         else:
-            guess = get_close_matches(material, MATERIALS, 1, 0.0)[0]
+            guess = get_close_matches(material, list(MATERIALS) + list(ALIASES), 1, 0.0)[0]
             print(f"Material {material!r} not found. Maybe you meant {guess!r}?", file=stderr)
             errors_encountered = True
             continue
     if errors_encountered:
         exit(1)
-    main(products)
+    main(*products)
