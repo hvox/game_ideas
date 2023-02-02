@@ -44,15 +44,15 @@ ALIASES = {
         ("space-science-pack", 1),
     ],
     "drone-research": [
-        ("science-pack-1", 1580),  # TODO: calculate exact numbers
-        ("science-pack-2", 1540),
-        ("science-pack-3", 800),
+        ("science-pack-1", 1830),
+        ("science-pack-2", 1665),
+        ("science-pack-3", 600),
     ],
     "roboport-chunk": [
+        ("radar", 1),
         ("roboport", 1),
-        ("big-electric-pole", 3 + 3 * 50**2 / 224**2),
+        ("big-electric-pole", 3),
         ("construction-robot", 50),
-        ("radar", 3 * 50**2 / 224**2),
         ("logistic-chest-storage", 1),
         ("logistic-chest-passive-provider", 1),
     ],
@@ -68,7 +68,7 @@ ALIASES = {
         ("fast-inserter", 20),
         ("long-handed-inserter", 10),
         ("pipe-to-ground", 10),
-        ("pipe", 25),
+        ("pipe", 22),
     ],
 }
 
