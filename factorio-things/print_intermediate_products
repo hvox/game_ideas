@@ -19,7 +19,7 @@ from fractions import Fraction
 from collections import defaultdict
 from math import ceil
 from sys import stderr
-from os import get_terminal_size
+from os import get_terminal_size, environ
 
 from factorio.calculator import get_total
 from factorio.recipes import MATERIALS, RECIPES, FLUIDS
@@ -32,6 +32,7 @@ FACILITIES = {
     # "rocket silo": 1000 / ((3684 - 1250) / TICKS_PER_SECOND + 300),
     "rocket silo": Fraction("1")
 }
+IGNORED_FACILITIES = set(environ.get("IGNORED_FACILITIES", "").split(", ")) or set()
 ALIASES = {
     "science-packs": [
         ("science-pack-1", 1),
@@ -73,7 +74,7 @@ ALIASES = {
 
 
 def main(*products: dict[str, Fraction]):
-    total = get_total(*products)
+    total = get_total(*products, ignored_facilities=IGNORED_FACILITIES)
     print(" material".ljust(26), "IPM        belts/tubes")
     try:
         terminal_width, _ = get_terminal_size()
@@ -81,7 +82,7 @@ def main(*products: dict[str, Fraction]):
         terminal_width = 224
     for material, amount in total.items():
         belts_or_tubes = amount / 60000 if material in FLUIDS else amount / 900
-        if recipe := RECIPES.get(material):
+        if (recipe := RECIPES.get(material)) and recipe.facility not in IGNORED_FACILITIES:
             facilities = amount * recipe.creation_time / FACILITIES[recipe.facility] / 60
             notes = f"{ceil(facilities * 10) / 10} {recipe.facility}s".ljust(20)
             ingredients = [
