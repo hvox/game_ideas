@@ -23,6 +23,7 @@ from factorio.technologies import TECHNOLOGIES
 
 def main(technologies: set[str]):
     total_cost = defaultdict(lambda: Fraction(0))
+    total_time = Fraction(0)
     stack, processed_technologies = list(technologies), set()
     while stack:
         technology_name = stack.pop()
@@ -30,6 +31,7 @@ def main(technologies: set[str]):
             continue
         processed_technologies.add(technology_name)
         technology = TECHNOLOGIES[technology_name]
+        total_time += technology.creation_time
         for science_pack in technology.science_packs:
             total_cost[science_pack] += technology.cost
         for dependency in technology.dependencies:
@@ -37,6 +39,7 @@ def main(technologies: set[str]):
     print(" science pack".ljust(26), "total amount")
     for science_pack, amount in total_cost.items():
         print(f" {science_pack}".ljust(26), amount)
+    print(f" + {total_time} seconds")
 
 
 if __name__ == "__main__":
