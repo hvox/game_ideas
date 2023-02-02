@@ -1,7 +1,7 @@
 produced material	required time	facility	ingredients
 accumulator	10	assembler	battery:5, iron-plate:2
 assembling-machine-1	1/2	assembler	electronic-circuit:3, iron-gear-wheel:5, iron-plate:9
-assembling-machine-2	1/2	assembler	assembling-machine-1:1, electronic-circuit:3, iron-gear-wheel:5, iron-plate:9
+assembling-machine-2	1/2	assembler	assembling-machine-1:1, electronic-circuit:3, iron-gear-wheel:5, steel-plate:2
 assembling-machine-3	1/2	assembler	assembling-machine-2:2, speed-module:4
 boiler	1/2	assembler	pipe:4, stone-furnace:1
 burner-mining-drill	4	assembler	iron-gear-wheel:3, iron-plate:3, stone-furnace:1

@@ -28,7 +28,7 @@ science-pack-1	5	assembler	copper-plate:1, iron-gear-wheel:1
 science-pack-2	6	assembler	inserter:1, transport-belt:1
 science-pack-3	12	assembler	sulfur:1/2, advanced-circuit:3/2, engine-unit:1
 space-science-pack	341/1000	rocket silo	rocket-part:1/10, satellite:1/1000
-steel-plate	5	furnace	iron-plate:5
+steel-plate	16	furnace	iron-plate:5
 sulfur	1/2	chemical plant	petroleum-gas:15, water:15
 sulfuric-acid	1/50	chemical plant	iron-plate:1/50, sulfur:1/10, water:2
 uranium-fuel-cell	1	chemical plant	iron-plate:1, uranium-235:1/10, uranium-238:19/10

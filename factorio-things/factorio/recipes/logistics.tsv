@@ -2,7 +2,7 @@ produced material	required time	facility	ingredients
 arithmetic-combinator	1/2	assembler	copper-cable:5, electronic-circuit:5
 artillery-wagon	4	assembler	advanced-circuit:20, engine-unit:64, iron-gear-wheel:10, pipe:16, steel-plate:40
 beacon	15	assembler	advanced-circuit:20, copper-cable:10, electronic-circuit:20, steel-plate:10
-big-electric-pole	1/2	assembler	copper-plate:5, steel-plate:5
+big-electric-pole	1/2	assembler	copper-plate:5, iron-stick:8, steel-plate:5
 burner-inserter	1/2	assembler	iron-gear-wheel:1, iron-plate:1
 car	2	assembler	engine-unit:8, iron-plate:20, steel-plate:5
 cargo-wagon	1	assembler	iron-gear-wheel:10, iron-plate:20, steel-plate:20
@@ -35,7 +35,7 @@ logistic-chest-requester	1/2	assembler	advanced-circuit:1, electronic-circuit:3,
 logistic-chest-storage	1/2	assembler	advanced-circuit:1, electronic-circuit:3, steel-chest:1
 logistic-robot	1/2	assembler	advanced-circuit:2, flying-robot-frame:1
 long-handed-inserter	1/2	assembler	inserter:1, iron-gear-wheel:1, iron-plate:1
-medium-electric-pole	1/2	assembler	copper-plate:2, steel-plate:2
+medium-electric-pole	1/2	assembler	copper-plate:2, iron-stick:4, steel-plate:2
 pipe	1/2	assembler	iron-plate:1
 pipe-to-ground	1/4	assembler	iron-plate:5/2, pipe:5
 power-switch	2	assembler	copper-cable:5, electronic-circuit:2, iron-plate:5
