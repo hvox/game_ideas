@@ -19,18 +19,27 @@ def dict_and(dict1: dict, dict2: dict) -> dict:
     return result
 
 
-def get_total_for_one_product_set(target_materials: dict[str, Rat]) -> dict[str, Rat]:
+def get_total_for_one_product_set(
+    target_materials: dict[str, Rat], ignored_facilities: set[str] = set()
+) -> dict[str, Rat]:
     total = dict(target_materials)
     for material in reversed(MATERIALS):
         if material not in total or material not in RECIPES:
+            continue
+        if RECIPES[material].facility in ignored_facilities:
             continue
         for ingridient, amount in RECIPES[material].ingredients.items():
             total[ingridient] = total.get(ingridient, Rat(0)) + amount * total[material]
     return total
 
 
-def get_total(*alternative_product_sets: dict[str, Rat]) -> dict[str, Rat]:
-    total = dict_max(*(get_total_for_one_product_set(prod) for prod in alternative_product_sets))
+def get_total(
+    *alternative_product_sets: dict[str, Rat], ignored_facilities: set[str] = set()
+) -> dict[str, Rat]:
+    total = dict_max(*(
+        get_total_for_one_product_set(prod, ignored_facilities)
+        for prod in alternative_product_sets
+    ))
     return dict(sorted(total.items(), key=lambda p: (MATERIALS[p[0]], p[0])))
 
 
