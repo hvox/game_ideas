@@ -22,12 +22,13 @@ from math import ceil
 from sys import stderr
 from os import get_terminal_size, environ
 
-from factorio.calculator import get_total
+from factorio.calculator import get_total, MODULES_PER_FACILITY
 from factorio.recipes import MATERIALS, RECIPES, FLUIDS, INTERMEDIATE
 
 TICKS_PER_SECOND = Fraction("60")
 FACILITIES = {
     "assembler": Fraction("0.75"),
+    # "assembler": (print("EXPENSIVE ASSEMBLERS!"), Fraction("5.5"))[1],
     "furnace": Fraction("2"),
     "chemical plant": Fraction("1"),
     # "rocket silo": 1000 / ((3684 - 1250) / TICKS_PER_SECOND + 300),
@@ -95,14 +96,15 @@ def main(*products: dict[str, Fraction], use_beacons: bool = True):
     except OSError:
         terminal_width = 224
     for material, amount in total.items():
-        if use_beacons and material in INTERMEDIATE:
-            amount /= 1.4
-        belts_or_tubes = amount / 60000 if material in FLUIDS else amount / 900
+        belts_or_tubes = amount / (60000 if material in FLUIDS else 900)
         if (recipe := RECIPES.get(material)) and recipe.facility not in IGNORED_FACILITIES:
-            facilities = amount * recipe.creation_time / FACILITIES[recipe.facility] / 60
+            x_coef = amount
+            if use_beacons and material in INTERMEDIATE:
+                x_coef /= 1 + 0.1 * MODULES_PER_FACILITY[recipe.facility]
+            facilities = x_coef * recipe.creation_time / FACILITIES[recipe.facility] / 60
             notes = f"{ceil(facilities * 10) / 10} {recipe.facility}s".ljust(20)
             ingredients = [
-                (mat, x * amount / (60000 if mat in FLUIDS else 900))
+                (mat, x * x_coef / (60000 if mat in FLUIDS else 900))
                 for mat, x in recipe.ingredients.items()
             ]
             notes += " <- " + ", ".join(f"{mat}:{ceil(x * 100) / 100}" for mat, x in ingredients)

@@ -3,6 +3,9 @@ from .libs.dict_arithmetic import dict_max
 from .recipes import MATERIALS, RECIPES, INTERMEDIATE
 
 
+MODULES_PER_FACILITY = {"assembler": 4, "chemical plant": 3, "furnace": 2, "rocket silo": 4}
+
+
 def dict_diff(dict1: dict, dict2: dict) -> dict:
     result = dict(dict1)
     for key in dict2:
@@ -29,10 +32,11 @@ def get_total_for_one_product_set(
             continue
         if RECIPES[material].facility in ignored_facilities:
             continue
+        product_amount = total[material]
+        if use_beacons and material in INTERMEDIATE:
+            product_amount /= 1 + 0.1 * MODULES_PER_FACILITY[RECIPES[material].facility]
         for ingridient, amount in RECIPES[material].ingredients.items():
-            if use_beacons and ingridient in INTERMEDIATE:
-                amount /= 1.4
-            total[ingridient] = total.get(ingridient, Rat(0)) + amount * total[material]
+            total[ingridient] = total.get(ingridient, Rat(0)) + amount * product_amount
     return total
 
 
