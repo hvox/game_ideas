@@ -1,6 +1,6 @@
 from fractions import Fraction as Rat
 from .libs.dict_arithmetic import dict_max
-from .recipes import MATERIALS, RECIPES
+from .recipes import MATERIALS, RECIPES, INTERMEDIATE
 
 
 def dict_diff(dict1: dict, dict2: dict) -> dict:
@@ -20,7 +20,8 @@ def dict_and(dict1: dict, dict2: dict) -> dict:
 
 
 def get_total_for_one_product_set(
-    target_materials: dict[str, Rat], ignored_facilities: set[str] = set()
+    target_materials: dict[str, Rat],
+    ignored_facilities: set[str] = set(), use_beacons: bool = False
 ) -> dict[str, Rat]:
     total = dict(target_materials)
     for material in reversed(MATERIALS):
@@ -29,15 +30,18 @@ def get_total_for_one_product_set(
         if RECIPES[material].facility in ignored_facilities:
             continue
         for ingridient, amount in RECIPES[material].ingredients.items():
+            if use_beacons and ingridient in INTERMEDIATE:
+                amount /= 1.4
             total[ingridient] = total.get(ingridient, Rat(0)) + amount * total[material]
     return total
 
 
 def get_total(
-    *alternative_product_sets: dict[str, Rat], ignored_facilities: set[str] = set()
+    *alternative_product_sets: dict[str, Rat],
+    ignored_facilities: set[str] = set(), use_beacons: bool = False
 ) -> dict[str, Rat]:
     total = dict_max(*(
-        get_total_for_one_product_set(prod, ignored_facilities)
+        get_total_for_one_product_set(prod, ignored_facilities, use_beacons)
         for prod in alternative_product_sets
     ))
     return dict(sorted(total.items(), key=lambda p: (MATERIALS[p[0]], p[0])))

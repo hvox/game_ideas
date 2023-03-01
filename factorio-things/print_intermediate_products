@@ -4,7 +4,7 @@ This program calculates the amount of all intermediate
 products needed to produce the end products you want.
 
 Usage:
-    print_intermediate_products <materials>...
+    print_intermediate_products [options] <materials>...
     print_intermediate_products -h | --help
 
 Arguments:
@@ -12,6 +12,7 @@ Arguments:
                    where amount is per minute.
 
 Options:
+    --use-beacons  Use cool productivity modules and beacons.
     -h --help      Print this help message and exit.
 """
 from difflib import get_close_matches
@@ -22,7 +23,7 @@ from sys import stderr
 from os import get_terminal_size, environ
 
 from factorio.calculator import get_total
-from factorio.recipes import MATERIALS, RECIPES, FLUIDS
+from factorio.recipes import MATERIALS, RECIPES, FLUIDS, INTERMEDIATE
 
 TICKS_PER_SECOND = Fraction("60")
 FACILITIES = {
@@ -48,6 +49,13 @@ ALIASES = {
         ("science-pack-2", 1665),
         ("science-pack-3", 600),
     ],
+    "rocket-silo-research": [
+        ("science-pack-1", 5750),
+        ("science-pack-2", 5565),
+        ("science-pack-3", 3650),
+        ("production-science-pack", 1600),
+        ("utility-science-pack", 1300),
+    ],
     "roboport-chunk": [
         ("radar", 1),
         ("roboport", 1),
@@ -70,17 +78,25 @@ ALIASES = {
         ("pipe-to-ground", 10),
         ("pipe", 22),
     ],
+    "beacon-chunk": [
+        ("beacon", 2),
+        ("speed-module-3", 4),
+        ("assembling-machine-3", 1),
+        ("productivity-module-3", 4)
+    ],
 }
 
 
-def main(*products: dict[str, Fraction]):
-    total = get_total(*products, ignored_facilities=IGNORED_FACILITIES)
+def main(*products: dict[str, Fraction], use_beacons: bool = True):
+    total = get_total(*products, ignored_facilities=IGNORED_FACILITIES, use_beacons=use_beacons)
     print(" material".ljust(26), "IPM        belts/tubes")
     try:
         terminal_width, _ = get_terminal_size()
     except OSError:
         terminal_width = 224
     for material, amount in total.items():
+        if use_beacons and material in INTERMEDIATE:
+            amount /= 1.4
         belts_or_tubes = amount / 60000 if material in FLUIDS else amount / 900
         if (recipe := RECIPES.get(material)) and recipe.facility not in IGNORED_FACILITIES:
             facilities = amount * recipe.creation_time / FACILITIES[recipe.facility] / 60
@@ -130,4 +146,4 @@ if __name__ == "__main__":
             continue
     if errors_encountered:
         exit(1)
-    main(*products)
+    main(*products, use_beacons=bool(args["--use-beacons"]))

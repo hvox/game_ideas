@@ -29,6 +29,11 @@ for entity_info in blueprint.entities.values():
     if entity in TOOLKIT:
         cost[entity] = cost.get(entity, Fraction(0)) + 1
         continue
+    for material, amount in entity_info[1].get("items", {}).items():
+        if material in cost:
+            cost[material] += amount
+        else:
+            cost[material] = amount
     for material, amount in RECIPES[entity].ingredients.items():
         if material in cost:
             cost[material] += amount

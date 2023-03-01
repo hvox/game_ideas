@@ -50,4 +50,6 @@ def topologically_sorted_materials(recipes: dict[str, Recipe]) -> list[str]:
 
 
 MATERIALS = {m: i for i, m in enumerate(topologically_sorted_materials(RECIPES))}
-FLUIDS = {fluid: i for fluid, i in MATERIALS.items() if fluid in {"water", "petroleum-gas"}}
+FLUIDS = {fluid: i for fluid, i in MATERIALS.items() if fluid in {
+    "water", "petroleum-gas", "heavy-oil"
+}}
