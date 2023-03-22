@@ -135,6 +135,14 @@ def main(*products: dict[str, Fraction], use_beacons: bool = True):
         )
 
 
+def parse_fraction(string: str) -> Fraction:
+    result = Fraction(1)
+    while "/" in string:
+        string, denumerator = string.rsplit("/", 1)
+        result /= Fraction(denumerator)
+    return result * Fraction(string)
+
+
 if __name__ == "__main__":
     args = __import__("docopt").docopt(__doc__)
     products = [defaultdict(lambda: Fraction(0))]
@@ -145,7 +153,7 @@ if __name__ == "__main__":
             continue
         try:
             material, amount_str = material_description.split(":", 1)
-            amount = Fraction(amount_str)
+            amount = parse_fraction(amount_str)
         except ValueError:
             msg = f'Argument {material_description!r} does not follow the format "name:amount".'
             print(msg, file=stderr)
