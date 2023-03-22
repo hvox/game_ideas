@@ -28,10 +28,15 @@ from factorio.recipes import MATERIALS, RECIPES, FLUIDS, INTERMEDIATE
 TICKS_PER_SECOND = Fraction("60")
 FACILITIES = {
     "assembler": Fraction("0.75"),
-    # "assembler": (print("EXPENSIVE ASSEMBLERS!"), Fraction("5.5"))[1],
     "furnace": Fraction("2"),
     "chemical plant": Fraction("1"),
     # "rocket silo": 1000 / ((3684 - 1250) / TICKS_PER_SECOND + 300),
+    "rocket silo": Fraction("1")
+}
+FACILITIES_WITH_MODULES = {
+    "assembler": Fraction("5.5"),
+    "furnace": Fraction("9.4"),
+    "chemical plant": Fraction("1"),
     "rocket silo": Fraction("1")
 }
 IGNORED_FACILITIES = set(environ.get("IGNORED_FACILITIES", "").split(", ")) or set()
@@ -79,11 +84,19 @@ ALIASES = {
         ("pipe-to-ground", 10),
         ("pipe", 22),
     ],
-    "beacon-chunk": [
+    "one-line-beacon-chunk": [
         ("beacon", 2),
         ("speed-module-3", 4),
         ("assembling-machine-3", 1),
         ("productivity-module-3", 4)
+    ],
+    "beacon-chunk": [
+        ("beacon", 12),
+        ("roboport", 1),
+        ("substation", 1),
+        ("speed-module-3", 24),
+        ("assembling-machine-3", 10),
+        ("productivity-module-3", 40),
     ],
 }
 
@@ -98,11 +111,13 @@ def main(*products: dict[str, Fraction], use_beacons: bool = True):
     for material, amount in total.items():
         belts_or_tubes = amount / (60000 if material in FLUIDS else 900)
         if (recipe := RECIPES.get(material)) and recipe.facility not in IGNORED_FACILITIES:
-            x_coef = amount
+            notes, x_coef = "", amount
             if use_beacons and material in INTERMEDIATE:
+                notes = "[BEACONED] "
                 x_coef /= 1 + 0.1 * MODULES_PER_FACILITY[recipe.facility]
-            facilities = x_coef * recipe.creation_time / FACILITIES[recipe.facility] / 60
-            notes = f"{ceil(facilities * 10) / 10} {recipe.facility}s".ljust(20)
+            facilities = x_coef * recipe.creation_time / 60 / (
+                (FACILITIES_WITH_MODULES if use_beacons else FACILITIES)[recipe.facility])
+            notes += f"{ceil(facilities * 10) / 10} {recipe.facility}s".ljust(20)
             ingredients = [
                 (mat, x * x_coef / (60000 if mat in FLUIDS else 900))
                 for mat, x in recipe.ingredients.items()
