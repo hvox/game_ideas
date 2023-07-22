@@ -3,6 +3,7 @@ from math import log2, ceil
 CHARSET = (
     "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_~"
     "!\"#$%&'()*+,-./:;<=>?@[\\]^`{|} "
+    "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 )
 
 
@@ -13,8 +14,15 @@ BASES = {
     64: (24, 4),
     85: (32, 5),
     91: (13, 2),
+    93: (85, 13),
     94: (72, 11),
     95: (256, 39),
+    96: (79, 12),
+    98: (33, 5),
+    99: (53, 8),
+    102: (20, 3),
+    107: (128, 19),
+    128: (7, 1),
 }
 
 
@@ -87,11 +95,14 @@ def table_to_str(table: list[list[str]]) -> str:
     return " " + "\n".join(lines)
 
 
-table = [["base", "cost", "ch/kb", "ch/kbit", "Δ/B"]]
+table = [["base", "cost", "η", "ch/kb", "Δ/B"]]
 for base, (bits, chars) in BASES.items():
     kbyte = 8192 // bits * chars + ceil(8192 % bits / log2(base))
-    kbit = 1024 // bits * chars + ceil(1024 % bits / log2(base))
+    # kbit = 1024 // bits * chars + ceil(1024 % bits / log2(base))
     delta_per_byte = calculate_delta_per_byte(base)
-    print(f"\r{base}", f"{8/(bits/chars) - 1:.1%}", kbyte, kbit, f"{delta_per_byte:g}")
-    table.append((base, f"{8/(bits/chars) - 1:.1%}", kbyte, kbit, f"{delta_per_byte:g}"))
-print(table_to_str(table))
+    efficiency = bits / chars / 8 * 100
+    print(f"\r {base}", f"{8/(bits/chars) - 1:.1%}",
+          f"{efficiency:5.2f}%", kbyte, f"{delta_per_byte:g}")
+    table.append((base, f"{8/(bits/chars) - 1:.1%}",
+                 f"{efficiency:5.2f}%", kbyte, f"{delta_per_byte:g}"))
+print("\r" + table_to_str(table))
