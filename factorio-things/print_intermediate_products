@@ -29,18 +29,24 @@ TICKS_PER_SECOND = Fraction("60")
 FACILITIES = {
     "assembler": Fraction("0.75"),
     "furnace": Fraction("2"),
-    "chemical plant": Fraction("1"),
-    # "rocket silo": 1000 / ((3684 - 1250) / TICKS_PER_SECOND + 300),
-    "rocket silo": Fraction("1")
+    "chemical plant": Fraction("1.25"),
+    "rocket silo": Fraction(1000 / ((3684 - 1250) / TICKS_PER_SECOND + 300)),
+    # "rocket silo": Fraction("1")
 }
 FACILITIES_WITH_MODULES = {
     "assembler": Fraction("5.5"),
     "furnace": Fraction("9.4"),
-    "chemical plant": Fraction("1"),
-    "rocket silo": Fraction("1")
+    "chemical plant": Fraction("1.25"),
+    "rocket silo": Fraction("1"),
 }
 IGNORED_FACILITIES = set(environ.get("IGNORED_FACILITIES", "").split(", ")) or set()
 ALIASES = {
+    "science-packs-4": [
+        ("science-pack-1", 1),
+        ("science-pack-2", 1),
+        ("military-science-pack", 1),
+        ("science-pack-3", 1),
+    ],
     "science-packs": [
         ("science-pack-1", 1),
         ("science-pack-2", 1),
@@ -51,9 +57,9 @@ ALIASES = {
         ("space-science-pack", 1),
     ],
     "drone-research": [
-        ("science-pack-1", 1830),
-        ("science-pack-2", 1665),
-        ("science-pack-3", 600),
+        ("science-pack-1", 1580),
+        ("science-pack-2", 1415),
+        ("science-pack-3", 350),
     ],
     "rocket-silo-research": [
         ("science-pack-1", 5750),
@@ -88,7 +94,7 @@ ALIASES = {
         ("beacon", 2),
         ("speed-module-3", 4),
         ("assembling-machine-3", 1),
-        ("productivity-module-3", 4)
+        ("productivity-module-3", 4),
     ],
     "beacon-chunk": [
         ("beacon", 12),
