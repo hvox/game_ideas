@@ -103,7 +103,9 @@ blueprint = {
     }
 }
 
-clipboard.copy("0" + base64.b64encode(zlib.compress(json.dumps(blueprint).encode(), 9)).decode())
+encoded = "0" + base64.b64encode(zlib.compress(json.dumps(blueprint).encode(), 9)).decode()
+clipboard.copy(encoded)
+print(encoded)
 
 
 {
