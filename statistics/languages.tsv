@@ -1,0 +1,11 @@
+language	i64	f32	f64
+C/C++	ok	ok	ok
+GDScript	ok	emulated	ok
+GLSL	absent	ok	absent or slow
+JS/TS	BigInt	emulated	ok
+Lua	ok	emulated	ok
+LuaJIT	absent	absent	ok
+Python	BigInt	emulated	ok
+Rust	ok	ok	ok
+WASM	ok	ok	ok
+Zig	ok	ok	ok
