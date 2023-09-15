@@ -1,6 +1,8 @@
 import sys
+import contextlib
 
-sys.set_int_max_str_digits(2**31 - 1)
+with contextlib.suppress(AttributeError):
+    sys.set_int_max_str_digits(2**31 - 1)
 ENTITY = tuple[str, dict[str, str | int]]
 ENTITIES = dict[tuple[float, float], ENTITY]
 ENCODING = {
