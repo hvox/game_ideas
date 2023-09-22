@@ -47,7 +47,8 @@ def search():
     return f(0)
 
 
-for i, grid in enumerate(search(), 1):
+for i, grid in enumerate(sorted(search()), 1):
     assert check_grid(grid)
-    print("\n", i)
+    # if any(list(x ^ y for y in range(16)) == grid for x in range(16)):
+    print("\n", i, ":", grid)
     print_grid(grid)
