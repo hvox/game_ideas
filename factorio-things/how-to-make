@@ -1,0 +1,183 @@
+#!/usr/bin/env python3
+"""
+Prints detailed plan how to build a factory of a specified material.
+
+Usage: {script} [options] NAME [IPM]
+
+Arguments:
+    NAME - Material to be produced.
+    IPM - Items per minute to be produced.
+
+Options:
+    -h, --help
+        Show this screen and exit.
+
+    --whole-plan
+        Show the whole plan without asking about individual ingredients.
+
+    --verbose
+        Raise verbosity level.
+"""
+import sys
+import math
+from contextlib import suppress
+from fractions import Fraction
+from pathlib import Path
+from typing import NamedTuple
+from difflib import get_close_matches
+from graphlib import TopologicalSorter
+
+
+class Material(NamedTuple):
+    name: str
+    time: Fraction
+    ingredients: dict[str, Fraction]
+
+    def __str__(self):
+        return self.name + "(" + ", ".join(f"{k}:{v}" for k, v in self.ingredients.items()) + ")"
+
+    def to_tsv_row(self) -> str:
+        ingredients = ", ".join(f"{k}:{v}" for k, v in self.ingredients.items())
+        return self.name + "\t" + str(self.time) + "\t" + ingredients
+
+    @staticmethod
+    def from_tsv_row(row: str) -> "Material":
+        name, time, ingredients_str = row.split("\t")
+        ingredients = {k: Fraction(v) for k, v in (s.split(":") for s in ingredients_str.split(", "))}
+        return Material(name, Fraction(time), ingredients)
+
+    @property
+    def is_liquid(self) -> bool:
+        liquids = "water petroleum-gas light-oil heavy-oil sulfuric-acid lubricant".split()
+        return self.name in liquids
+
+    @property
+    def items_per_lane(self) -> int:
+        return 60 * (1000 if self.is_liquid else 15)
+
+    @property
+    def buildings(self) -> Fraction:
+        return self.time if self.is_liquid or self.name == "space-science-pack" else Fraction(0.75) * self.time
+
+    @property
+    def color(self) -> int:
+        return ((sum(self.name.split("-")[0].encode()) ^ 3) & 7) + 1
+
+    def __bool__(self):
+        return bool(self.ingredients)
+
+
+MATERIALS = {
+    recipe.name: recipe
+    for recipe in map(
+        Material.from_tsv_row,
+        (Path(__file__).resolve().parent / "materials.tsv").read_text().removesuffix("\n").split("\n")[1:],
+    )
+}
+
+COLLECTIONS = {
+    "science-packs": {
+        "automation-science-pack": Fraction(1),
+        "logistic-science-pack": Fraction(1),
+        "chemical-science-pack": Fraction(1),
+        "military-science-pack": Fraction(1),
+        "production-science-pack": Fraction(1),
+        "utility-science-pack": Fraction(1),
+        "space-science-pack": Fraction(1),
+    }
+}
+
+for material in [x for recipe in MATERIALS.values() for x in recipe.ingredients]:
+    if material not in MATERIALS:
+        MATERIALS[material] = Material(material, Fraction(0), {})
+
+
+def interactive(target: str, target_amount: Fraction):
+    graph = {mat: rec.ingredients for mat, rec in MATERIALS.items()}
+    total = {mat: Fraction(0) for mat in TopologicalSorter(graph).static_order()}
+    if target in COLLECTIONS:
+        for material, amount in COLLECTIONS[target].items():
+            total[material] = amount * target_amount
+    else:
+        total[target] = target_amount
+    for material, amount in reversed(total.items()):
+        if amount == 0:
+            continue
+        print(f"{float(amount/MATERIALS[material].items_per_lane):4.2f} {material}")
+        for ingr, x in MATERIALS[material].ingredients.items():
+            x *= amount
+            print(f"    {float(x/900):4.2f} {ingr}")
+        print(end=f"\x1b[{len(MATERIALS[material].ingredients)}A")
+        for ingr, x in MATERIALS[material].ingredients.items():
+            x *= amount
+            line = f"{float(x/900):4.2f} {ingr}"
+            if to_continue(f"    {line} "):
+                total[ingr] += x
+            else:
+                print(f"\x1b[1A\x1b[K    \x1b[9m{line}\x1b[29m")
+
+
+def show_plan(target: str, target_amount: Fraction):
+    graph = {mat: rec.ingredients for mat, rec in MATERIALS.items()}
+    total = {mat: Fraction(0) for mat in TopologicalSorter(graph).static_order()}
+    if target in COLLECTIONS:
+        for material, amount in COLLECTIONS[target].items():
+            total[material] = amount * target_amount
+    else:
+        total[target] = target_amount
+    for material, amount in reversed(total.items()):
+        if amount == 0:
+            continue
+        line = f"{float(amount/MATERIALS[material].items_per_lane):9.2f} {material:23} IPM={amount}"
+        if MATERIALS[material]:
+            buildings = math.trunc(amount / 60 * MATERIALS[material].buildings * 10) / 10
+            suffix = f" [{buildings}]"
+            suffix += " <- " + ", ".join(
+                f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{amount*x}"
+                for ingr, x in MATERIALS[material].ingredients.items()
+            )
+        else:
+            suffix = "\x1b[0m <- source"
+        line += " " * (43 - len(line)) + suffix
+        h = MATERIALS[material].color
+        print(f"\x1b[9{h}m" + line + "\x1b[0m")
+        for ingr, x in MATERIALS[material].ingredients.items():
+            total[ingr] += x * amount
+    print()
+
+
+def main(script_name: str, *script_args: str):
+    doc = __doc__.format(script=Path(script_name).name)
+    args = __import__("docopt").docopt(doc, script_args)
+    setattr(debug, "enabled", args["--verbose"])
+    debug(f"Running with arguments {dict(args)!r}")
+    target = args["NAME"]
+    target_amount = Fraction(args["IPM"] or "900")
+    available_targets = list(MATERIALS) + list(COLLECTIONS)
+    if target not in available_targets:
+        print(f"\x1b[91mERROR:\x1b[0m I have no idea what \x1b[91m{target}\x1b[0m is!")
+        prefixes = ["Did you mean", "or maybe", "or"]
+        for i, suggestion in enumerate(get_close_matches(target, available_targets, 3, 0.5)):
+            print(f"       {prefixes[i]} \x1b[92m{suggestion}\x1b[0m?")
+        exit(1)
+    if args["--whole-plan"]:
+        show_plan(target, target_amount)
+    else:
+        interactive(target, target_amount)
+
+
+def to_continue(msg: str = "Press enter to continue... "):
+    with suppress(EOFError):
+        return input(msg) in ("", "\r")
+    print()
+    return True
+
+
+def debug(*objects: object, sep: str = " "):
+    if getattr(debug, "enabled", False):
+        print(sep.join(map(str, objects)))
+
+
+if __name__ == "__main__":
+    with suppress(KeyboardInterrupt):
+        main(sys.argv[0], *sys.argv[1:])
