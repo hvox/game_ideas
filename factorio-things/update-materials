@@ -91,7 +91,9 @@ def main(script_name: str, *script_args: str):
     if "space-science-pack" not in recipes:
         warn("Failed to find space-science-pack!")
         recipes["space-science-pack"] = Material(
-            "space-science-pack", (Fraction("41.25") + 100 * 3) / 1000, {"rocket-part": Fraction("0.1")}
+            "space-science-pack",
+            (Fraction("41.25") + 100 * 3) / 1000,
+            {"rocket-part": Fraction(1, 10), "satellite": Fraction(1, 1000)},
         )
     tsv = "material\ttime\tingridients\n"
     tsv += "".join(recipe.to_tsv_row() + "\n" for recipe in sorted(recipes.values()))

@@ -159,7 +159,7 @@ small-lamp	1/2	electronic-circuit:1, copper-cable:3, iron-plate:1
 solar-panel	10	steel-plate:5, electronic-circuit:15, copper-plate:5
 solar-panel-equipment	10	solar-panel:1, advanced-circuit:2, steel-plate:5
 solid-fuel	2	heavy-oil:20
-space-science-pack	273/800	rocket-part:1/10
+space-science-pack	273/800	rocket-part:1/10, satellite:1/1000
 speed-module	15	advanced-circuit:5, electronic-circuit:5
 speed-module-2	30	speed-module:4, advanced-circuit:5, processing-unit:5
 speed-module-3	60	speed-module-2:5, advanced-circuit:5, processing-unit:5
