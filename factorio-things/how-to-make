@@ -130,7 +130,7 @@ def show_plan(target: str, target_amount: Fraction):
             continue
         line = f"{float(amount/MATERIALS[material].items_per_lane):9.2f} {material:23} IPM={amount}"
         if MATERIALS[material]:
-            buildings = math.trunc(amount / 60 * MATERIALS[material].buildings * 10) / 10
+            buildings = math.ceil(amount / 60 * MATERIALS[material].buildings * 10) / 10
             suffix = f" [{buildings}]"
             suffix += " <- " + ", ".join(
                 f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{amount*x}"
