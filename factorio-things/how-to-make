@@ -57,7 +57,14 @@ class Material(NamedTuple):
 
     @property
     def buildings(self) -> Fraction:
-        return self.time if self.is_liquid or self.name == "space-science-pack" else Fraction(0.75) * self.time
+        production_speed = {
+            "space-science-pack": self.time,
+            "iron-plate": self.time,
+            "coper-plate": self.time,
+            "steel-plate": self.time * 5,
+            "stone-brick": self.time,
+        }
+        return production_speed.get(self.name) or (self.time if self.is_liquid else self.time / Fraction(0.75))
 
     @property
     def color(self) -> int:
