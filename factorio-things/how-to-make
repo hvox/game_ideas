@@ -91,7 +91,14 @@ COLLECTIONS = {
         "production-science-pack": Fraction(1),
         "utility-science-pack": Fraction(1),
         "space-science-pack": Fraction(1),
-    }
+    },
+    "rocket-silo-research": {
+        "automation-science-pack": Fraction(5750),
+        "logistic-science-pack": Fraction(5565),
+        "chemical-science-pack": Fraction(3650),
+        "production-science-pack": Fraction(1600),
+        "utility-science-pack": Fraction(1300),
+    },
 }
 
 for material in [x for recipe in MATERIALS.values() for x in recipe.ingredients]:
