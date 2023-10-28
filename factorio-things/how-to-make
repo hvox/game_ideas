@@ -74,6 +74,15 @@ class Material(NamedTuple):
         return bool(self.ingredients)
 
 
+IGNORED_MATERIALS = {
+    # "advanced-circuit",
+    # "electronic-circuit",
+    # "plastic-bar",
+    # "processing-unit",
+    # "sulfuric-acid",
+}
+
+
 MATERIALS = {
     recipe.name: recipe
     for recipe in map(
@@ -142,18 +151,23 @@ def show_plan(target: str, target_amount: Fraction):
     for material, amount in reversed(total.items()):
         if amount == 0:
             continue
-        line = f"{float(amount/MATERIALS[material].items_per_lane):9.2f} {material:23} IPM={amount}"
+        amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
+        line = f"{float(amount/MATERIALS[material].items_per_lane):9.2f} {material:23} IPM={amount_str}"
         if MATERIALS[material]:
             buildings = math.ceil(amount / 60 * MATERIALS[material].buildings * 10) / 10
+            buildings = int(buildings) if buildings % 1 == 0 else buildings
             suffix = f" [{buildings}]"
             suffix += " <- " + ", ".join(
-                f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{amount*x}"
+                f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{float(amount*x):.1f}"
                 for ingr, x in MATERIALS[material].ingredients.items()
             )
         else:
             suffix = "\x1b[0m <- source"
         line += " " * (43 - len(line)) + suffix
         h = MATERIALS[material].color
+        if material in IGNORED_MATERIALS and material != target:
+            print(f"\x1b[9;9{h}m" + line + "\x1b[0m")
+            continue
         print(f"\x1b[9{h}m" + line + "\x1b[0m")
         for ingr, x in MATERIALS[material].ingredients.items():
             total[ingr] += x * amount
