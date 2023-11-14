@@ -5,6 +5,7 @@ from graphlib import TopologicalSorter
 from itertools import chain
 from pathlib import Path
 from typing import Iterable
+from collections.abc import Mapping
 
 from frozendict import frozendict
 
@@ -63,7 +64,7 @@ class Material:
         return ((sum(self.name.split("-")[0].encode()) ^ 3) & 7) + 1
 
     @staticmethod
-    def load_materials() -> frozendict[str, Material]:
+    def load_materials() -> Mapping[str, Material]:
         path = Path(__file__).resolve().parent / "materials.tsv"
         recipes = map(Material.from_tsv_row, path.read_text().splitlines()[1:])
         materials = {recipe.name: recipe for recipe in recipes}
@@ -74,6 +75,18 @@ class Material:
         result = frozendict(materials)
         setattr(Material, "materials", result)
         return result
+
+    def total_cost(self, items_per_minute: Real = 0, ignored=None) -> dict[Material, Fraction]:
+        items_per_minute = items_per_minute or 900
+        self_amount = to_fraction(items_per_minute)
+        materials = getattr(Material, "materials")
+        total = {material: Fraction(0) for material in materials}
+        total[self.name] = self_amount
+        not_ignored = (lambda x: not ignored(materials[x])) if ignored else lambda x: True
+        for name, ipm in filter(not_ignored, reversed(total.items())):
+            for ingr, ingr_ipm in materials[name].ingredients.items():
+                total[ingr] += ipm * ingr_ipm
+        return {materials[name]: ipm for name, ipm in total.items() if ipm}
 
     def __bool__(self):
         return bool(self.ingredients)
