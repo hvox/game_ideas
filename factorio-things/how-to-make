@@ -25,7 +25,9 @@ from pathlib import Path
 
 from materials_61774 import Material
 
+# TODO: delete or reimplement
 IGNORED_MATERIALS = {
+    " aboba ? ",
     # "advanced-circuit",
     # "electronic-circuit",
     # "plastic-bar",
@@ -55,37 +57,26 @@ COLLECTIONS = {
 }
 
 
-def show_plan(target: str, target_ipm: Fraction):
-    graph = {mat: rec.ingredients for mat, rec in MATERIALS.items()}
-    total = {mat: Fraction(0) for mat in TopologicalSorter(graph).static_order()}
-    if target in COLLECTIONS:
-        for material, amount in COLLECTIONS[target].items():
-            total[material] = amount * target_ipm
+def show_plan(target_material: str, target_ipm: Fraction):
+    if target_material in COLLECTIONS:
+        exit(1)  # TODO: Implement that case
     else:
-        total[target] = target_ipm
+        total = MATERIALS[target_material].total_cost(target_ipm)
     for material, amount in reversed(total.items()):
-        if amount == 0:
-            continue
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
-        line = f"{float(amount/MATERIALS[material].items_per_lane):9.2f} {material:23} IPM={amount_str}"
-        if MATERIALS[material]:
-            buildings = math.ceil(amount / 60 * MATERIALS[material].buildings * 10) / 10
+        line = f"{float(amount/material.items_per_lane):9.2f} {material.name:23} IPM={amount_str}"
+        if material:
+            buildings = math.ceil(amount / 60 * material.buildings * 10) / 10
             buildings = int(buildings) if buildings % 1 == 0 else buildings
             suffix = f" [{buildings}]"
             suffix += " <- " + ", ".join(
                 f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{float(amount*x):.1f}"
-                for ingr, x in MATERIALS[material].ingredients.items()
+                for ingr, x in material.ingredients.items()
             )
         else:
             suffix = "\x1b[0m <- source"
         line += " " * (43 - len(line)) + suffix
-        h = MATERIALS[material].color
-        if material in IGNORED_MATERIALS and material != target:
-            print(f"\x1b[9;9{h}m" + line + "\x1b[0m")
-            continue
-        print(f"\x1b[9{h}m" + line + "\x1b[0m")
-        for ingr, x in MATERIALS[material].ingredients.items():
-            total[ingr] += x * amount
+        print(f"\x1b[9{material.color}m" + line + "\x1b[0m")
     print()
 
 
