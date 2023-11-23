@@ -59,9 +59,10 @@ COLLECTIONS = {
 
 def show_plan(target_material: str, target_ipm: Fraction):
     if target_material in COLLECTIONS:
-        exit(1)  # TODO: Implement that case
+        targets = {mat: ipm * target_ipm for mat, ipm in COLLECTIONS[target_material].items()}
     else:
-        total = MATERIALS[target_material].total_cost(target_ipm)
+        targets = {target_material: target_ipm}
+    total = dict_sum(MATERIALS[mat].total_cost(ipm) for mat, ipm in targets.items())
     for material, amount in reversed(total.items()):
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
         line = f"{float(amount/material.items_per_lane):9.2f} {material.name:23} IPM={amount_str}"
@@ -102,6 +103,16 @@ def to_continue(msg: str = "Press enter to continue... "):
         return input(msg) in ("", "\r")
     print()
     return True
+
+
+def dict_sum(*dicts):
+    if len(dicts) == 1 and not hasattr(dicts[0], "items"):
+        dicts = dicts[0]
+    total = {}
+    for dict in dicts:
+        for key, value in dict.items():
+            total[key] = value if key not in total else total[key] + value
+    return total
 
 
 def debug(*objects: object, sep: str = " "):
