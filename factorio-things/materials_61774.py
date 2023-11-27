@@ -76,8 +76,19 @@ class Material:
         setattr(Material, "materials", result)
         return result
 
-    def total_cost(self, items_per_minute: Real = 0, ignored=None) -> dict[Material, Fraction]:
-        items_per_minute = items_per_minute or 900
+    @staticmethod
+    def load_the_boys() -> tuple[Material, ...]:
+        materials = getattr(Material, "materials") or Material.load_materials()
+        coal = materials["coal"]
+        iron = materials["iron-plate"]
+        copper = materials["copper-plate"]
+        plastic = materials["plastic-bar"]
+        green = materials["electronic-circuit"]
+        red = materials["advanced-circuit"]
+        blue = materials["processing-unit"]
+        return coal, iron, copper, plastic, green, red, blue
+
+    def total_cost(self, items_per_minute: Real, ignored=None) -> dict[Material, Fraction]:
         self_amount = to_fraction(items_per_minute)
         materials = getattr(Material, "materials")
         total = {material: Fraction(0) for material in materials}
