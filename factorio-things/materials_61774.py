@@ -93,7 +93,7 @@ class Material:
         materials = getattr(Material, "materials")
         total = {material: Fraction(0) for material in materials}
         total[self.name] = self_amount
-        not_ignored = (lambda x: not ignored(materials[x])) if ignored else lambda x: True
+        not_ignored = (lambda x: not ignored(materials[x[0]])) if ignored else lambda x: True
         for name, ipm in filter(not_ignored, reversed(total.items())):
             for ingr, ingr_ipm in materials[name].ingredients.items():
                 total[ingr] += ipm * ingr_ipm
