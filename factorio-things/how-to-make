@@ -89,13 +89,16 @@ def show_nice_sizes(target_material: Material):
 
     def get_nice_inputs(original_total: dict):
         for inputs in subsets([BLUE, RED, GREEN]):
+            if target_material in inputs:
+                continue
             total = original_total
-            for inp in inputs:
-                total = dict_substract(total, inp.total_cost(total.get(inp, 0), ignored))
+            result = {}
             inputs += (IRON, COPPER, PLASTIC)
-            total = {inp: 0 for inp in inputs} | total
-            if all(total[inp] % 900 == 0 or total[inp] % 900 > 886.5 for inp in inputs):
-                return {inp: total[inp] for inp in inputs if total[inp]}
+            for inp in (inp for inp in inputs if inp in total):
+                result[inp] = total[inp]
+                total = dict_substract(total, inp.total_cost(total[inp], ignored))
+            if all(x % 900 == 0 or x % 900 > 886.5 for inp, x in result.items()):
+                return result
         return None
 
     nice_sizes = []
@@ -123,11 +126,14 @@ def show_nice_sizes(target_material: Material):
         if any((ipm, inputs) == size for size in nice_sizes[:i]):
             continue
         belts = f2s(ipm / 900)
+        direct = {mat: x * ipm for mat, x in target_material}
+        direct_inputs_str = " ".join(f"\x1b[9{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in direct.items())
         inputs_str = " ".join(f"\x1b[9{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in inputs.items())
         print(
             f"\x1b[9{target_material.color}m"
             # f"IPM={ipm:{ipm_len}<}"
             f"     {target_material.name}:{belts:{belts_len}}\x1b[0m"
+            # f" <= {direct_inputs_str}"
             f" <= {inputs_str}"
         )
 
@@ -148,7 +154,7 @@ def main(script_name: str, *script_args: str):
     if args["IPM"]:
         show_plan(target, Fraction(args["IPM"]))
     else:
-        show_nice_sizes(Material(target))
+        show_nice_sizes(MATERIALS[target])
 
 
 def to_continue(msg: str = "Press enter to continue... "):
