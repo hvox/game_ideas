@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+from collections.abc import Mapping
 from fractions import Fraction
+from functools import cached_property
 from graphlib import TopologicalSorter
 from itertools import chain
 from pathlib import Path
 from typing import Iterable
-from collections.abc import Mapping
 
 from frozendict import frozendict
 
@@ -59,9 +60,54 @@ class Material:
         }
         return production_speed.get(self.name) or (self.time if self.is_liquid else self.time / Fraction(0.75))
 
-    @property
-    def color(self) -> int:
-        return ((sum(self.name.split("-")[0].encode()) ^ 3) & 7) + 1
+    @cached_property
+    def color(self) -> object:
+        black = 37
+        red = 91
+        green = 92
+        yellow = 93
+        blue = 94
+        magenta = 95
+        cyan = 96
+        white = "97;1"
+        name = self.name.split("-")[0]
+        return {
+            "accumulator": blue,
+            "advanced": red,
+            "automation": red,
+            "battery": blue,
+            "chemical": cyan,
+            "coal": black,
+            "copper": red,
+            "electric": green,
+            "electronic": green,
+            "engine": yellow,
+            "heavy": yellow,
+            "inserter": yellow,
+            "iron": cyan,
+            "light": red,
+            "logistic": green,
+            "lubricant": green,
+            "military": black,
+            "petroleum": black,
+            "pipe": cyan,
+            "plastic": white,
+            "processing": red,
+            "production": magenta,
+            "radar": black,
+            "rocket": magenta,
+            "satellite": magenta,
+            "solar": blue,
+            "solid": black,
+            "space": white,
+            "speed": blue,
+            "steel": cyan,
+            "stone": yellow,
+            "sulfur": yellow,
+            "transport": yellow,
+            "utility": yellow,
+            "water": blue,
+        }.get(name, 38)
 
     @staticmethod
     def load_materials() -> Mapping[str, Material]:

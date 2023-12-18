@@ -76,13 +76,13 @@ def show_plan(target_material: str, target_ipm: Fraction):
             buildings = int(buildings) if buildings % 1 == 0 else buildings
             suffix = f" [{buildings}]"
             suffix += " <- " + ", ".join(
-                f"\x1b[9{MATERIALS[ingr].color}m{ingr}:{float(amount*x):.1f}"
+                f"\x1b[{MATERIALS[ingr].color}m{ingr}:{float(amount*x):.1f}"
                 for ingr, x in material.ingredients.items()
             )
         else:
             suffix = "\x1b[0m <- source"
         line += " " * (43 - len(line)) + suffix
-        print(f"\x1b[9{material.color}m" + line + "\x1b[0m")
+        print(f"\x1b[{material.color}m" + line + "\x1b[0m")
     print()
 
 
@@ -130,10 +130,10 @@ def show_nice_sizes(target_material: Material):
             continue
         belts = f2s(ipm / 900)
         direct = {mat: x * ipm for mat, x in target_material}
-        direct_inputs_str = " ".join(f"\x1b[9{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in direct.items())
-        inputs_str = " ".join(f"\x1b[9{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in inputs.items())
+        direct_inputs_str = " ".join(f"\x1b[{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in direct.items())
+        inputs_str = " ".join(f"\x1b[{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in inputs.items())
         print(
-            f"\x1b[9{target_material.color}m"
+            f"\x1b[{target_material.color}m"
             # f"IPM={ipm:{ipm_len}<}"
             f"     {target_material.name}:{belts:{belts_len}}\x1b[0m"
             # f" <= {direct_inputs_str}"
