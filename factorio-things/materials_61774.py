@@ -107,7 +107,7 @@ class Material:
             "transport": yellow,
             "utility": yellow,
             "water": blue,
-        }.get(name, 38)
+        }.get(name, 0)
 
     @staticmethod
     def load_materials() -> Mapping[str, Material]:
