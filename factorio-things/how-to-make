@@ -63,14 +63,15 @@ def show_plan(target_material: str, target_ipm: Fraction):
         targets = {mat: ipm * target_ipm for mat, ipm in COLLECTIONS[target_material].items()}
     else:
         targets = {target_material: target_ipm}
+    ignored_materials = IGNORED_MATERIALS - set(targets)
     total = dict_sum(
-        MATERIALS[mat].total_cost(ipm, (lambda material: material.name in IGNORED_MATERIALS))
+        MATERIALS[mat].total_cost(ipm, (lambda x: x.name in ignored_materials))
         for mat, ipm in targets.items()
     )
     for material, amount in reversed(total.items()):
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
         line = f"{float(amount/material.items_per_lane):9.2f} {material.name:23} IPM={amount_str}"
-        if material and material.name not in IGNORED_MATERIALS:
+        if material and (material.name not in ignored_materials):
             buildings = math.ceil(amount / 60 * material.buildings * 10) / 10
             buildings = int(buildings) if buildings % 1 == 0 else buildings
             suffix = f" [{buildings}]"
