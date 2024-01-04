@@ -26,14 +26,18 @@ from frozendict import frozendict
 
 from materials_61774 import Material
 
-# TODO: delete or reimplement
 IGNORED_MATERIALS = {
-    " aboba ? ",
-    # "advanced-circuit",
-    # "electronic-circuit",
-    # "plastic-bar",
-    # "processing-unit",
-    # "sulfuric-acid",
+    "advanced-circuit",
+    "electronic-circuit",
+    "plastic-bar",
+    "processing-unit",
+    "sulfuric-acid",
+    "steel-plate",
+    "iron-plate",
+    "copper-plate",
+    "low-density-structure",
+    "light-oil",
+    "petroleum-gas",
 }
 
 MATERIALS = Material.load_materials()
