@@ -120,6 +120,13 @@ def show_nice_sizes(target_material: Material):
             nice_sizes.append((ipm, inputs))
         if len(nice_sizes) >= 5:
             break
+    direct = {mat: x for mat, x in target_material}
+    direct_inputs_str = " and ".join(f"\x1b[{inp.color}m{f2s(x)} {inp}\x1b[0m" for inp, x in direct.items())
+    print(
+        f" Generaly \x1b[{target_material.color}m{target_material.name}\x1b[0m"
+        f" is made of {direct_inputs_str}.\n"
+        " But speaking in term of lanes of basic resources we get these options:"
+    )
     if not nice_sizes:
         print("\x1b[91mFAILURE: No nice sizes found...\x1b[0m")
         total = target_material.total_cost(900, ignored)
@@ -129,8 +136,6 @@ def show_nice_sizes(target_material: Material):
     belts_len = max(len(f2s(ipm / 900)) for ipm, _ in nice_sizes)
     for i, (ipm, inputs) in enumerate(nice_sizes):
         belts = f2s(ipm / 900)
-        direct = {mat: x * ipm for mat, x in target_material}
-        direct_inputs_str = " ".join(f"\x1b[{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in direct.items())
         inputs_str = " ".join(f"\x1b[{inp.color}m{inp}:{f2s(x/900)}\x1b[0m" for inp, x in inputs.items())
         print(
             f"\x1b[{target_material.color}m"
