@@ -1,8 +1,9 @@
-from ..materials import Material
-from fractions import Fraction
-from dataclasses import dataclass
-from typing import Self, Literal
 import itertools
+from dataclasses import dataclass
+from fractions import Fraction
+from typing import Literal, Self
+
+from ..materials import Material
 
 BELT_SPEED = Fraction("15")
 BELT = "transport-belt"

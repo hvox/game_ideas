@@ -1,10 +1,12 @@
-from ..entities import Entities, EntityAttributes, belt, underground, assembler, splitter
-from fractions import Fraction
+import itertools
 from dataclasses import dataclass
+from fractions import Fraction
 from typing import Self
+
+from ..entities import (Entities, EntityAttributes, assembler, belt, splitter,
+                        underground)
 from ..recipes import MATERIALS
 from .types import Forks
-import itertools
 
 
 def get_line_left(lines: list[tuple[str, int]], material: str) -> tuple[int, int]:

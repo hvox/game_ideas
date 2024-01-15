@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-from factorio.recipes import RECIPES
 from collections import Counter
+
+from factorio.recipes import RECIPES
 
 
 def pipe_throughput(pipe_length: int) -> float:

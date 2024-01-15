@@ -1,5 +1,4 @@
-from typing import TypeVar, Any
-
+from typing import Any, TypeVar
 
 K = TypeVar("K")
 V = TypeVar("V")

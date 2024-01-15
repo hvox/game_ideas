@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from queue import PriorityQueue
+
 from factorio import binary_encoding
-from factorio.tiles import Blueprint, DEFAULT_TILES
+from factorio.tiles import DEFAULT_TILES, Blueprint
 
 
 def get_huffman_encoding(frequencies: list[int]) -> list[str]:

@@ -1,13 +1,13 @@
-from fractions import Fraction
-from math import ceil
-from itertools import count
 from contextlib import suppress
+from fractions import Fraction
+from itertools import count
+from math import ceil
+
+from ...entities import Entities
 from ...libs.dict_arithmetic import dict_max
 from ...recipes import MATERIALS, RECIPES
-from ...entities import Entities
-from ..compact_main_bus_splitter import main_bus
 from ..assemly_line_generator import assembly_line
-
+from ..compact_main_bus_splitter import main_bus
 
 BELT_SPEED = 15
 

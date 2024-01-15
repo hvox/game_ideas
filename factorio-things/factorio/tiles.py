@@ -1,4 +1,5 @@
 import itertools
+
 from .blueprints import Blueprint
 
 # Transport belts: 4 directions.

@@ -1,5 +1,5 @@
-import sys
 import contextlib
+import sys
 
 with contextlib.suppress(AttributeError):
     sys.set_int_max_str_digits(2**31 - 1)

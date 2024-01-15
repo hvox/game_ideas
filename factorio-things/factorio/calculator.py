@@ -1,7 +1,7 @@
 from fractions import Fraction as Rat
-from .libs.dict_arithmetic import dict_max
-from .recipes import MATERIALS, RECIPES, INTERMEDIATE
 
+from .libs.dict_arithmetic import dict_max
+from .recipes import INTERMEDIATE, MATERIALS, RECIPES
 
 MODULES_PER_FACILITY = {"assembler": 4, "chemical plant": 3, "furnace": 2, "rocket silo": 4}
 

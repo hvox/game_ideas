@@ -1,7 +1,7 @@
 from fractions import Fraction
+from functools import cache
 from pathlib import Path
 from typing import NamedTuple
-from functools import cache
 
 
 class Recipe(NamedTuple):

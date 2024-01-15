@@ -1,11 +1,11 @@
-import zlib
 import base64
 import json
 import math
-from . import binary_encoding
+import zlib
 from dataclasses import dataclass
 from typing import Self
 
+from . import binary_encoding
 
 DIRECTED_STRUCTURES = {"transport-belt", "splitter", "express-loader", "underground-belt"}
 

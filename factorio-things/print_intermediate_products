@@ -15,15 +15,15 @@ Options:
     --use-beacons  Use cool productivity modules and beacons.
     -h --help      Print this help message and exit.
 """
+from collections import defaultdict
 from difflib import get_close_matches
 from fractions import Fraction
-from collections import defaultdict
 from math import ceil, trunc
+from os import environ, get_terminal_size
 from sys import stderr
-from os import get_terminal_size, environ
 
-from factorio.calculator import get_total, MODULES_PER_FACILITY
-from factorio.recipes import MATERIALS, RECIPES, FLUIDS, INTERMEDIATE
+from factorio.calculator import MODULES_PER_FACILITY, get_total
+from factorio.recipes import FLUIDS, INTERMEDIATE, MATERIALS, RECIPES
 
 TICKS_PER_SECOND = Fraction("60")
 FACILITIES = {

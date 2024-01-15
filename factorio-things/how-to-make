@@ -22,6 +22,7 @@ from difflib import get_close_matches
 from fractions import Fraction
 from itertools import chain, combinations
 from pathlib import Path
+
 from frozendict import frozendict
 
 from materials_61774 import Material
@@ -38,6 +39,7 @@ IGNORED_MATERIALS = {
     "low-density-structure",
     "light-oil",
     "petroleum-gas",
+    "iron-gear-wheel",
 }
 
 MATERIALS = Material.load_materials()
@@ -70,8 +72,7 @@ def show_plan(target_material: str, target_ipm: Fraction):
         targets = {target_material: target_ipm}
     ignored_materials = IGNORED_MATERIALS - set(targets)
     total = dict_sum(
-        MATERIALS[mat].total_cost(ipm, (lambda x: x.name in ignored_materials))
-        for mat, ipm in targets.items()
+        MATERIALS[mat].total_cost(ipm, (lambda x: x.name in ignored_materials)) for mat, ipm in targets.items()
     )
     for material, amount in reversed(total.items()):
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)

@@ -1,6 +1,7 @@
-from typing import Any
-from ..entities import Entities, ELECTRIC_POLES
 from math import trunc
+from typing import Any
+
+from ..entities import ELECTRIC_POLES, Entities
 
 
 def get_wire_length(pole: str) -> float:

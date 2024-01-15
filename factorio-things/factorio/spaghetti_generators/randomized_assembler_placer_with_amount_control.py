@@ -1,9 +1,10 @@
 from dataclasses import dataclass
 from fractions import Fraction
 from queue import PriorityQueue
+from random import shuffle
+
 from ..blueprints import Blueprint
 from ..materials import Material
-from random import shuffle
 
 ASSEMBLER = "assembling-machine-1"
 ASSEMBLER_SPEED = Fraction("0.5")

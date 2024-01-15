@@ -1,15 +1,13 @@
-from ..entities import (
-    Entities, belt, underground, assembler, splitter,
-    inserter, electric_pole, inserter_with_throughput
-)
-from fractions import Fraction
-from ..recipes import Recipe, RECIPES, MATERIALS
-from dataclasses import dataclass
-from .types import Forks
-from typing import Self, Any, no_type_check
-from math import ceil
 import itertools
+from dataclasses import dataclass
+from fractions import Fraction
+from math import ceil
+from typing import Any, Self, no_type_check
 
+from ..entities import (Entities, assembler, belt, electric_pole, inserter,
+                        inserter_with_throughput, splitter, underground)
+from ..recipes import MATERIALS, RECIPES, Recipe
+from .types import Forks
 
 BELT_THROUGHPUT = 15
 ASSEMBLY_SPEED = Fraction("0.75")

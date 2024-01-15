@@ -1,6 +1,7 @@
-from ..materials import Material
-from ..blueprints import rotated
 from random import choice
+
+from ..blueprints import rotated
+from ..materials import Material
 
 
 def design_factory_for(material: Material):

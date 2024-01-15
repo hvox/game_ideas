@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-import clipboard
 import base64
 import json
 import zlib
 from itertools import product
-from math import trunc, atan2, tau, dist
+from math import atan2, dist, tau, trunc
 from random import randint
+
+import clipboard
 
 LAMP = "<>"
 POLE = "##"
