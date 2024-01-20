@@ -5,7 +5,7 @@ Prints detailed plan how to build a factory of a specified material.
 Usage: {script} [options] NAME [IPM]
 
 Arguments:
-    NAME - Material to be produced.
+    NAME - Material to be produced or multiple materials separated by comma.
     IPM - Items per minute to be produced.
 
 Options:
@@ -78,11 +78,13 @@ COLLECTIONS = {
 }
 
 
-def show_plan(target_material: str, target_ipm: Fraction):
-    if target_material in COLLECTIONS:
-        targets = {mat: ipm * target_ipm for mat, ipm in COLLECTIONS[target_material].items()}
-    else:
-        targets = {target_material: target_ipm}
+def show_plan(targets: dict[str, Fraction], target_ipm: Fraction):
+    targets = dict_sum(
+        dict((mat, ingr_ipm * ipm * target_ipm) for mat, ingr_ipm in COLLECTIONS[target].items())
+        if target in COLLECTIONS
+        else {target: ipm * target_ipm}
+        for target, ipm in targets.items()
+    )
     ignored_materials = IGNORED_MATERIALS - set(targets)
     total = dict_sum(
         MATERIALS[mat].total_cost(ipm, (lambda x: x.name in ignored_materials)) for mat, ipm in targets.items()
@@ -165,16 +167,22 @@ def main(script_name: str, *script_args: str):
     args = __import__("docopt").docopt(doc, script_args)
     setattr(debug, "enabled", args["--verbose"])
     debug(f"Running with arguments {dict(args)!r}")
-    target = args["NAME"]
     available_targets = list(MATERIALS) + list(COLLECTIONS)
-    if target not in available_targets:
-        print(f"\x1b[91mERROR:\x1b[0m I have no idea what \x1b[91m{target}\x1b[0m is!")
-        prefixes = ["Did you mean", "or maybe", "or"]
-        for i, suggestion in enumerate(get_close_matches(target, available_targets, 3, 0.5)):
-            print(f"       {prefixes[i]} \x1b[92m{suggestion}\x1b[0m?")
-        exit(1)
+    targets = {
+        target.strip(): Fraction((x + ["1"])[0].strip())
+        for target, *x in (s.strip().split(":") for s in args["NAME"].split(","))
+    }
+    for target in targets:
+        if target not in available_targets:
+            print(f"\x1b[91mERROR:\x1b[0m I have no idea what \x1b[91m{target}\x1b[0m is!")
+            prefixes = ["Did you mean", "or maybe", "or"]
+            for i, suggestion in enumerate(get_close_matches(target, available_targets, 3, 0.5)):
+                print(f"       {prefixes[i]} \x1b[92m{suggestion}\x1b[0m?")
+            exit(1)
     if args["IPM"]:
-        show_plan(target, Fraction(args["IPM"]))
+        show_plan(targets, Fraction(args["IPM"]))
+    elif ":" in args["NAME"]:
+        show_plan(targets, Fraction(1))
     else:
         show_nice_sizes(MATERIALS[target])
 
