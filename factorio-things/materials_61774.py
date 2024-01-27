@@ -57,6 +57,7 @@ class Material:
             "coper-plate": self.time,
             "steel-plate": self.time * 5,
             "stone-brick": self.time,
+            "battery": self.time,
         }
         return production_speed.get(self.name) or (self.time if self.is_liquid else self.time / Fraction(0.75))
 
