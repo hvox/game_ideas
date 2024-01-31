@@ -116,7 +116,7 @@ oil-refinery	8	steel-plate:15, iron-gear-wheel:10, stone-brick:10, electronic-ci
 personal-laser-defense-equipment	10	processing-unit:20, low-density-structure:5, laser-turret:5
 personal-roboport-equipment	10	advanced-circuit:10, iron-gear-wheel:40, steel-plate:20, battery:45
 personal-roboport-mk2-equipment	20	personal-roboport-equipment:5, processing-unit:100, low-density-structure:20
-petroleum-gas	1/10	water:3/2, light-oil:3/2
+petroleum-gas	1/9	crude-oil:20/9
 piercing-rounds-magazine	3	firearm-magazine:1, steel-plate:1, copper-plate:5
 piercing-shotgun-shell	8	shotgun-shell:2, copper-plate:5, steel-plate:2
 pipe	1/2	iron-plate:1
@@ -158,7 +158,7 @@ small-electric-pole	1/4	wood:1/2, copper-cable:1
 small-lamp	1/2	electronic-circuit:1, copper-cable:3, iron-plate:1
 solar-panel	10	steel-plate:5, electronic-circuit:15, copper-plate:5
 solar-panel-equipment	10	solar-panel:1, advanced-circuit:2, steel-plate:5
-solid-fuel	2	heavy-oil:20
+solid-fuel	2	light-oil:10
 space-science-pack	273/800	rocket-part:1/10, satellite:1/1000
 speed-module	15	advanced-circuit:5, electronic-circuit:5
 speed-module-2	30	speed-module:4, advanced-circuit:5, processing-unit:5

@@ -72,7 +72,7 @@ def parse_recipes(path: Path) -> dict[str, Material]:
             name, count = parse_material(results[0])
         time /= count
         ingredients = {name: x / count for name, x in ingredients.items()}
-        recipes[name] = Material(name, time, ingredients)
+        recipes.setdefault(name, Material(name, time, ingredients))
     return recipes
 
 
