@@ -51,15 +51,16 @@ class Material:
 
     @property
     def buildings(self) -> Fraction:
-        production_speed = {
+        time = {
             "space-science-pack": self.time,
             "iron-plate": self.time,
             "coper-plate": self.time,
             "steel-plate": self.time * 5,
             "stone-brick": self.time,
             "battery": self.time,
+            "solid-fuel": self.time,
         }
-        return production_speed.get(self.name) or (self.time if self.is_liquid else self.time / Fraction(0.75))
+        return time.get(self.name) or (self.time if self.is_liquid else self.time / Fraction(0.75))
 
     @cached_property
     def color(self) -> object:
