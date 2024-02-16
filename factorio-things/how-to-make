@@ -52,21 +52,33 @@ COLLECTIONS = {
         "automation-science-pack": Fraction(1),
         "logistic-science-pack": Fraction(1),
         "chemical-science-pack": Fraction(1),
-        # Only about one third of my researches are about war...
-        "military-science-pack": Fraction(1, 3),
+        "military-science-pack": Fraction(1),
         "production-science-pack": Fraction(1),
         "utility-science-pack": Fraction(1),
-        # I can make productivity modules by hand if it comes to that!
-        "space-science-pack": 1 / Fraction("1.4"),
+        # 1000 science-pack = 1 satellite + 100 rocket-part
+        "satellite": Fraction(1, 1000),
+        "rocket-part": Fraction(100, 1000) * 10 / 14,
+        # P.S. I can make productivity modules by hand if it comes to that!
     },
-    "science-packs-with-modules": {
-        "automation-science-pack": Fraction(5, 6),
-        "logistic-science-pack": Fraction(5, 6),
-        "chemical-science-pack": Fraction(5, 6),
-        "military-science-pack": Fraction(5, 6),
-        "production-science-pack": Fraction(5, 6) * Fraction(10, 14),
-        "utility-science-pack": Fraction(5, 6) * Fraction(10, 14),
-        "space-science-pack": Fraction("100/168"),
+    "science-packs-for-artillery": {
+        "automation-science-pack": Fraction(1),
+        "logistic-science-pack": Fraction(1),
+        "chemical-science-pack": Fraction(1),
+        "military-science-pack": Fraction(1),
+        # "production-science-pack": Fraction(1),
+        "utility-science-pack": Fraction(1),
+        "satellite": Fraction(1, 1000),
+        "rocket-part": Fraction(100, 1000) * 10 / 14,
+    },
+    "science-packs-for-drones": {
+        "automation-science-pack": Fraction(1),
+        "logistic-science-pack": Fraction(1),
+        "chemical-science-pack": Fraction(1),
+        # "military-science-pack": Fraction(1),
+        "production-science-pack": Fraction(1),
+        "utility-science-pack": Fraction(1),
+        "satellite": Fraction(1, 1000),
+        "rocket-part": Fraction(100, 1000) * 10 / 14,
     },
     "rocket-silo-research": {
         "automation-science-pack": Fraction(5750),
