@@ -14,6 +14,9 @@ Options:
 
     --verbose
         Raise verbosity level.
+
+    -i, --interactive
+        Interactive.
 """
 import math
 import sys
@@ -90,7 +93,7 @@ COLLECTIONS = {
 }
 
 
-def show_plan(targets: dict[str, Fraction], target_ipm: Fraction):
+def show_plan(targets: dict[str, Fraction], target_ipm: Fraction, interactive: bool = False):
     targets = dict_sum(
         dict((mat, ingr_ipm * ipm * target_ipm) for mat, ingr_ipm in COLLECTIONS[target].items())
         if target in COLLECTIONS
@@ -101,7 +104,9 @@ def show_plan(targets: dict[str, Fraction], target_ipm: Fraction):
     total = dict_sum(
         MATERIALS[mat].total_cost(ipm, (lambda x: x.name in ignored_materials)) for mat, ipm in targets.items()
     )
-    for material, amount in reversed(total.items()):
+    materials = total.items() if interactive else reversed(total.items())
+    current_wares = {}
+    for material, amount in materials:
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
         line = f"{float(amount/material.items_per_lane):9.2f} {material.name:23} IPM={amount_str}"
         if material and (material.name not in ignored_materials):
@@ -116,6 +121,15 @@ def show_plan(targets: dict[str, Fraction], target_ipm: Fraction):
             suffix = "\x1b[0m <- source"
         line += " " * (43 - len(line)) + suffix
         print(f"\x1b[{material.color}m" + line + "\x1b[0m")
+        if interactive:
+            if material.name not in ignored_materials:
+                current_wares = dict_substract(current_wares, {i: x * amount for i, x in material})
+                current_wares = {i: x for i, x in current_wares.items() if x}
+            for mat, x in current_wares.items():
+                print(f"{float(x/mat.items_per_lane):3.2f} \x1b[{mat.color}m{mat.name:23}\x1b[0m IPM={math.ceil(x)}")
+            input()
+            print(f"\x1b[{len(current_wares) + 1}A\x1b[0J", end="")
+            current_wares = dict_sum(current_wares, {material: amount})
     print()
 
 
@@ -192,9 +206,9 @@ def main(script_name: str, *script_args: str):
                 print(f"       {prefixes[i]} \x1b[92m{suggestion}\x1b[0m?")
             exit(1)
     if args["IPM"]:
-        show_plan(targets, Fraction(args["IPM"]))
+        show_plan(targets, Fraction(args["IPM"]), interactive=args["--interactive"])
     elif ":" in args["NAME"]:
-        show_plan(targets, Fraction(1))
+        show_plan(targets, Fraction(1), interactive=args["--interactive"])
     else:
         show_nice_sizes(MATERIALS[target])
 
