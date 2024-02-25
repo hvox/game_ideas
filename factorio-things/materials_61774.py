@@ -55,7 +55,7 @@ class Material:
             "space-science-pack": self.time,
             "iron-plate": self.time,
             "coper-plate": self.time,
-            "steel-plate": self.time * 5,
+            "steel-plate": self.time,
             "stone-brick": self.time,
             "battery": self.time,
             "solid-fuel": self.time,
