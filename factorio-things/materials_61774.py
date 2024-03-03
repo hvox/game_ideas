@@ -94,7 +94,7 @@ class Material:
             "petroleum": black,
             "pipe": cyan,
             "plastic": white,
-            "processing": red,
+            "processing": blue,
             "production": magenta,
             "radar": black,
             "rocket": magenta,
