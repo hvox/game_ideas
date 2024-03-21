@@ -1,3 +1,5 @@
+from time import monotonic as time
+
 # mask:  0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
 tiles = "  :▄ : ▄:▄▄:▀ :█ :▀▄:█▄: ▀:▄▀: █:▄█:▀▀:█▀:▀█:██".split(":")
 
@@ -47,11 +49,16 @@ def search():
     return f(0)
 
 
+t0 = time()
+grids = list(search())
+dt = time() - t0
 j = 0
-for i, grid in enumerate(sorted(search()), 1):
+for i, grid in enumerate(sorted(grids), 1):
     if not is_grid_tilable(grid):
         continue
     j += 1
-    print("\n", i, " : ", j, " : ", grid)
+    print("\n", i, " : ", j, " : ", grid, end="\n\n")
     for _ in range(1):
         print_grid(grid)
+print(f"\nBtw the algorithm found {len(grids)} grids in {dt:.2f} seconds.")
+print(f"This is {dt/len(grids)*10**6:.0f} μs per grid!")
