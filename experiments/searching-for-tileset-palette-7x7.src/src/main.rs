@@ -61,7 +61,7 @@ fn search() -> i32 {
 	fn dfs(i: usize, grid: &mut [u8; 49], tiles: &mut [u8; 49]) -> i32 {
 		let x = i % 7;
 		let y = i / 7;
-		if y == 7 {
+		if y > 6 {
 			unsafe {
 				GRIDS_FOUND += 1;
 				println!("#{}  :  {:?}", GRIDS_FOUND, grid);
@@ -87,10 +87,7 @@ fn search() -> i32 {
 				continue;
 			}
 			let down = if y > 0 { grid[x + (y - 1) * 7] } else { 0 };
-			if bit(tile, 1) != bit(down, 6)
-				|| bit(tile, 2) != bit(down, 7)
-				|| bit(tile, 3) != bit(down, 8)
-			{
+			if tile & 0b111 != (down >> 5) & 0b111 {
 				continue;
 			}
 			grid[i] = tile;
@@ -117,5 +114,6 @@ fn search() -> i32 {
 }
 
 fn main() {
-	search();
+	let total = search();
+	println!("total = {}", total);
 }
