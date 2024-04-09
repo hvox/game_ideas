@@ -1,4 +1,6 @@
+use image::EncodableLayout;
 use itertools::Itertools;
+extern crate image;
 
 const FULL_BLOCKS: [&str; 3] = ["░░", "▓▓", "██"];
 const NONE_TILE: u8 = 253;
@@ -37,6 +39,35 @@ fn print_grid(grid: &[u8]) {
 			.collect::<String>();
 		[up, mid, down].into_iter().for_each(|s| println!("{}", s));
 	}
+}
+
+fn save_grid(name: &str, grid: &[u8]) {
+	let tiles_image = image::load_from_memory(include_bytes!("tiles.png")).unwrap().to_rgba8();
+	let tiles = tiles_image.as_bytes();
+	let mut image = [0u8; 7 * 7 * 3 * 3 * 4];
+	let w = 7 * 3;
+	for (y2, row) in grid.chunks(7).rev().enumerate() {
+		for (x2, tile) in row.into_iter().enumerate() {
+			let t = TILES.iter().enumerate().filter(|(_, mask)| *mask == tile).next().unwrap().0;
+			let (x1, y1) = (t % 7, t / 7);
+			for dy in 0..=2 {
+				for dx in 0..=2 {
+					for channel in 0..=3 {
+						image[(x2 * 3 + dx + (y2 * 3 + dy) * w) * 4 + channel] =
+							tiles[(x1 * 3 + dx + (y1 * 3 + dy) * w) * 4 + channel];
+					}
+				}
+			}
+		}
+	}
+	image::save_buffer(
+		&std::path::Path::new(name),
+		&image,
+		w as u32,
+		w as u32,
+		image::ColorType::Rgba8,
+	)
+	.unwrap();
 }
 
 fn asymmetry_score(grid: &[u8]) -> i32 {
@@ -79,20 +110,21 @@ fn is_grid_tilable(grid: &[u8]) -> bool {
 }
 
 static mut GRIDS_FOUND: i32 = 0;
-static mut MIN_SCORE: i32 = 2147483647;
+static mut MIN_SCORE: i32 = 19;
 fn search() -> i32 {
 	fn dfs(i: usize, grid: &mut [u8; 49], tiles: &mut [u8; 49]) -> i32 {
 		let x = i % 7;
 		let y = i / 7;
 		if y > 6 {
 			let score = asymmetry_score(grid);
-			if score > 2147483646 {
-				return 0;
-			};
 			unsafe {
+				if score > MIN_SCORE + 6 {
+					return 0;
+				};
 				GRIDS_FOUND += 1;
 				MIN_SCORE = MIN_SCORE.min(score);
 				println!("\n#{} : score={} best={}\n{:?}", GRIDS_FOUND, score, MIN_SCORE, grid);
+				save_grid(&format!("grid_{:02}_{}.png", score, GRIDS_FOUND), grid);
 			}
 			print_grid(grid);
 			// unsafe { if GRIDS_FOUND == 1 { panic!("!") }; }
