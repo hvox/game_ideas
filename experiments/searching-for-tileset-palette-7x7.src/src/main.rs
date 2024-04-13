@@ -124,7 +124,8 @@ fn search() -> i32 {
 				GRIDS_FOUND += 1;
 				MIN_SCORE = MIN_SCORE.min(score);
 				println!("\n#{} : score={} best={}\n{:?}", GRIDS_FOUND, score, MIN_SCORE, grid);
-				save_grid(&format!("grid_{:02}_{}.png", score, GRIDS_FOUND), grid);
+				let tiles = grid.iter().map(|&x| x.to_string()).join(",");
+				save_grid(&format!("grid-{:02}-{}.png", score, tiles), grid);
 			}
 			print_grid(grid);
 			// unsafe { if GRIDS_FOUND == 1 { panic!("!") }; }
