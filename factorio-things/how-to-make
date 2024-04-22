@@ -17,6 +17,9 @@ Options:
 
     -i, --interactive
         Interactive.
+
+    -s, --stats
+        Show some statistics about used materials.
 """
 import math
 import sys
@@ -25,26 +28,44 @@ from difflib import get_close_matches
 from fractions import Fraction
 from itertools import chain, combinations
 from pathlib import Path
+from collections import defaultdict
 
 from frozendict import frozendict
 
 from materials_61774 import Material
 
 IGNORED_MATERIALS = {
-    "advanced-circuit",
-    "electronic-circuit",
-    "plastic-bar",
-    "processing-unit",
-    "sulfuric-acid",
-    "steel-plate",
     "iron-plate",
+    # "electronic-circuit",
     "copper-plate",
-    "low-density-structure",
-    "light-oil",
-    "petroleum-gas",
-    # "iron-gear-wheel",
-    "engine-unit",
+    # "advanced-circuit",
+    # "low-density-structure",
+    # "processing-unit",
+    # "battery",
+    # "sulfur",
+    # "engine-unit",
     "stone-brick",
+    "stone",
+    "coal",
+    "light-oil",
+    "heavy-oil",
+    # "plastic-bar",
+    "petronium-gas",
+    # "sulfuric-acid",
+    # "advanced-circuit",
+    # "electronic-circuit",
+    # "plastic-bar",
+    # "processing-unit",
+    # "sulfuric-acid",
+    # "steel-plate",
+    # "iron-plate",
+    # "copper-plate",
+    # "low-density-structure",
+    # # "light-oil",
+    # # "iron-gear-wheel",
+    # "engine-unit",
+    # "stone-brick",
+    "petroleum-gas",
 }
 
 MATERIALS = Material.load_materials()
@@ -90,10 +111,49 @@ COLLECTIONS = {
         "production-science-pack": Fraction(1600),
         "utility-science-pack": Fraction(1300),
     },
+    "drone-research": {
+        "automation-science-pack": Fraction(1580),
+        "logistic-science-pack": Fraction(1415),
+        "chemical-science-pack": Fraction(350),
+    },
+    "rocket-launcher-2022": {
+        "transport-belt": 22500,
+        "fast-transport-belt": 8500,
+        "inserter": 9000,
+        "small-electric-pole": 3600,
+        "steel-furnace": 2600,
+        "pipe": 2500,
+        "pipe-to-ground": 2100,
+        "assembling-machine-2": 2100,
+        "fast-inserter": 1800,
+        "underground-belt": 1200,
+        "fast-underground-belt": 1200,
+        "long-handed-inserter": 988,
+        "big-electric-pole": 400,
+        "assembling-machine-1": 318,
+        "splitter": 289,
+        "fast-splitter": 275,
+        "chemical-plant": 259,
+        "electric-furnace": 144,
+        "oil-refinery": 101,
+        "lab": 99,
+        "pump": 8,
+        "beacon": 4,
+        "filter-inserter": 2,
+        "stack-inserter": 2,
+        "substation": 2,
+        "steel-chest": 1,
+        # Roboport network
+        "radar": 25,
+        "roboport": 100,
+        "logistic-chest-storage": 400,
+        "construction-robot": 5000,
+        # P.S. The silo itself is made by hand from intermediate materials.
+    },
 }
 
 
-def show_plan(targets: dict[str, Fraction], target_ipm: Fraction, interactive: bool = False):
+def show_plan(targets: dict[str, Fraction], target_ipm: Fraction, interactive: bool = False, show_stats: bool = False):
     targets = dict_sum(
         dict((mat, ingr_ipm * ipm * target_ipm) for mat, ingr_ipm in COLLECTIONS[target].items())
         if target in COLLECTIONS
@@ -106,10 +166,13 @@ def show_plan(targets: dict[str, Fraction], target_ipm: Fraction, interactive: b
     )
     materials = total.items() if interactive else reversed(total.items())
     current_wares = {}
+    usage_statistics = defaultdict(int)
     for material, amount in materials:
         amount_str = math.ceil(10 * amount) / 10 if amount % 1 else int(amount)
         line = f"{float(amount/material.items_per_lane):9.2f} {material.name:23} IPM={amount_str}"
         if material and (material.name not in ignored_materials):
+            for ingr, _ in material:
+                usage_statistics[ingr] += 1
             buildings = math.ceil(amount / 60 * material.buildings * 10) / 10
             buildings = int(buildings) if buildings % 1 == 0 else buildings
             suffix = f" [{buildings}]"
@@ -130,6 +193,17 @@ def show_plan(targets: dict[str, Fraction], target_ipm: Fraction, interactive: b
             input()
             print(f"\x1b[{len(current_wares) + 1}A\x1b[0J", end="")
             current_wares = dict_sum(current_wares, {material: amount})
+    if show_stats:
+        print("--- statistics ---")
+        stats = [
+            (m, x, (math.ceil(sum(x for _, x in m.total_cost(1).items()) if m else 1)))
+            for m, x in usage_statistics.items()
+        ]
+        for material, x, density in sorted(stats, key=lambda mxp: (-mxp[1], -mxp[2])):
+            # if x == 1:
+            #     break
+            # density = math.ceil(sum(x for _, x in material)) if material else 1
+            print(f"{x:2}  p={density:<2} ", material)
     print()
 
 
@@ -206,9 +280,9 @@ def main(script_name: str, *script_args: str):
                 print(f"       {prefixes[i]} \x1b[92m{suggestion}\x1b[0m?")
             exit(1)
     if args["IPM"]:
-        show_plan(targets, Fraction(args["IPM"]), interactive=args["--interactive"])
+        show_plan(targets, Fraction(args["IPM"]), interactive=args["--interactive"], show_stats=args["--stats"])
     elif ":" in args["NAME"]:
-        show_plan(targets, Fraction(1), interactive=args["--interactive"])
+        show_plan(targets, Fraction(1), interactive=args["--interactive"], show_stats=args["--stats"])
     else:
         show_nice_sizes(MATERIALS[target])
 
